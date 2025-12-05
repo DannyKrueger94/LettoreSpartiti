@@ -207,13 +207,15 @@ footer {
     background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--hover-color) 100%);
     border: 2px solid transparent;
     color: var(--text-color);
-    padding: 15px 20px;
+    padding: 15px;
     font-size: 1.5rem;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     min-height: 60px;
     min-width: 60px;
+    width: 60px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -222,9 +224,16 @@ footer {
     user-select: none;
 }
 
+.btn-round {
+    aspect-ratio: 1/1;
+}
+
 .btn-play-pause {
     min-height: 70px;
     min-width: 70px;
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
 }
 
 .btn-control:hover {
@@ -346,17 +355,23 @@ footer {
     .btn-control {
         min-height: 50px !important;
         min-width: 50px !important;
+        width: 50px !important;
+        height: 50px !important;
         font-size: 1.4rem;
-        padding: 10px;
+        padding: 8px;
     }
     
     .btn-play-pause {
         min-height: 60px !important;
         min-width: 60px !important;
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.6rem;
     }
     
     .btn-control span {
         display: block;
+        line-height: 1;
     }
     
     /* Controllo velocità compatto */

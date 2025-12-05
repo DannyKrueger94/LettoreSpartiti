@@ -267,11 +267,8 @@ function startScroll() {
         if (scrollAccumulator >= 1) {
             const pixelsToScroll = Math.floor(scrollAccumulator);
             
-            // USA scrollBy invece di scrollTop per compatibilità mobile
-            mainContainer.scrollBy({
-                top: pixelsToScroll,
-                behavior: 'auto' // 'auto' invece di 'smooth' per precisione
-            });
+            // USA scrollTop che funziona meglio su mobile
+            mainContainer.scrollTop += pixelsToScroll;
             
             scrollAccumulator -= pixelsToScroll; // Mantieni il resto decimale
             updateDebugPanel(`Scrolling ${pixelsToScroll}px`);
