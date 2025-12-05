@@ -218,6 +218,13 @@ footer {
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-sm);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.btn-play-pause {
+    min-height: 70px;
+    min-width: 70px;
 }
 
 .btn-control:hover {
@@ -337,6 +344,21 @@ footer {
     #speedSlider::-moz-range-thumb {
         width: 32px;
         height: 32px;
+    }
+    
+    .btn-control {
+        min-height: 70px;
+        min-width: 70px;
+        font-size: 1.8rem;
+    }
+    
+    .btn-play-pause {
+        min-height: 80px;
+        min-width: 80px;
+    }
+    
+    footer {
+        padding: 18px 12px;
     }
 }
 

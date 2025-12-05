@@ -27,11 +27,34 @@ const elements = {
     uploadBox: document.querySelector('.upload-box')
 };
 
+// ========== DEBUG PANEL ==========
+function updateDebugPanel(message) {
+    const debugPanel = document.getElementById('debugPanel');
+    const debugInfo = document.getElementById('debugInfo');
+    if (debugPanel && debugInfo) {
+        debugPanel.style.display = 'block';
+        const timestamp = new Date().toLocaleTimeString();
+        debugInfo.innerHTML = `
+            <strong>${timestamp}</strong><br>
+            ${message}<br>
+            Speed: x${scrollSpeed.toFixed(1)}<br>
+            Scrolling: ${isScrolling ? 'YES' : 'NO'}<br>
+            Accumulator: ${scrollAccumulator.toFixed(2)}<br>
+            ScrollTop: ${mainContainer ? Math.floor(mainContainer.scrollTop) : 'N/A'}px
+        `;
+    }
+}
+
 // ========== INIZIALIZZAZIONE ==========
 window.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 App inizializzata');
     mainContainer = document.querySelector('main');
     setupEventListeners();
+    
+    // Mostra debug su mobile
+    if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        updateDebugPanel('App caricata su mobile');
+    }
 });
 
 // ========== EVENT LISTENERS ==========
@@ -72,7 +95,13 @@ function setupEventListeners() {
     // ===== CONTROLLI SCROLL =====
     
     // Play/Pause
-    elements.playPauseBtn.addEventListener('click', toggleScroll);
+    elements.playPauseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🎯 Click su Play/Pause button');
+        updateDebugPanel('Click Play/Pause');
+        toggleScroll();
+    });
 
     // Slider velocità
     elements.speedSlider.addEventListener('input', (e) => {
@@ -213,12 +242,17 @@ function resetUploadBox() {
 function startScroll() {
     isScrolling = true;
     elements.playIcon.textContent = '⏸️'; // Cambia icona in pausa
+    scrollAccumulator = 0; // Reset accumulatore
     
     console.log(`▶️ Scroll avviato (velocità: x${scrollSpeed.toFixed(1)})`);
+    console.log(`📱 Device: ${navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'}`);
 
     // Funzione di animazione che viene chiamata ~60 volte al secondo
     function animate() {
-        if (!isScrolling) return;
+        if (!isScrolling) {
+            console.log('⚠️ Scroll interrotto - isScrolling è false');
+            return;
+        }
 
         // Calcola quanto scrollare in base alla velocità
         // scrollSpeed è un moltiplicatore (0.1x - 1.5x)
@@ -273,6 +307,9 @@ function stopScroll() {
  * Toggle play/pause
  */
 function toggleScroll() {
+    console.log(`🔄 Toggle scroll - stato attuale: ${isScrolling ? 'PLAYING' : 'PAUSED'}`);
+    updateDebugPanel(`Toggle: ${isScrolling ? 'STOP' : 'START'}`);
+    
     if (isScrolling) {
         stopScroll();
     } else {
@@ -284,6 +321,8 @@ function toggleScroll() {
 function toggleFullscreen() {
     const elem = document.documentElement;
     
+    console.log('🔲 Tentativo fullscreen...');
+    
     // Verifica se siamo già in fullscreen (multi-browser)
     const isFullscreen = document.fullscreenElement || 
                          document.webkitFullscreenElement || 
@@ -291,17 +330,34 @@ function toggleFullscreen() {
                          document.msFullscreenElement;
     
     if (!isFullscreen) {
+        console.log('📱 Entrando in fullscreen...');
         // Entra in fullscreen - supporto multi-browser
         if (elem.requestFullscreen) {
-            elem.requestFullscreen().catch(err => console.error('Errore fullscreen:', err));
-        } else if (elem.webkitRequestFullscreen) { // Safari/iOS
+            elem.requestFullscreen()
+                .then(() => console.log('✅ Fullscreen attivato'))
+                .catch(err => {
+                    console.error('❌ Errore fullscreen standard:', err);
+                    // Fallback per iOS: nascondi barre browser
+                    tryIOSFullscreenFallback();
+                });
+        } else if (elem.webkitRequestFullscreen) { // Safari iOS
             elem.webkitRequestFullscreen();
+            console.log('✅ Fullscreen webkit attivato');
+        } else if (elem.webkitEnterFullscreen) { // iOS alternativo
+            elem.webkitEnterFullscreen();
+            console.log('✅ Fullscreen webkit enter attivato');
         } else if (elem.mozRequestFullScreen) { // Firefox
             elem.mozRequestFullScreen();
+            console.log('✅ Fullscreen moz attivato');
         } else if (elem.msRequestFullscreen) { // IE/Edge
             elem.msRequestFullscreen();
+            console.log('✅ Fullscreen ms attivato');
+        } else {
+            console.warn('⚠️ Fullscreen API non supportata');
+            tryIOSFullscreenFallback();
         }
     } else {
+        console.log('📱 Uscendo da fullscreen...');
         // Esci da fullscreen - supporto multi-browser
         if (document.exitFullscreen) {
             document.exitFullscreen();
@@ -313,6 +369,12 @@ function toggleFullscreen() {
             document.msExitFullscreen();
         }
     }
+}
+
+// Fallback per iOS che non supporta fullscreen standard
+function tryIOSFullscreenFallback() {
+    console.log('📱 Usando fallback iOS');
+    alert('Su iOS/Safari:\n\n1. Tocca il pulsante Condividi (quadrato con freccia)\n2. Scorri e tocca "Aggiungi a Home"\n3. Apri l\'app dalla Home per esperienza fullscreen');
 }
 
 // ========== UTILITY ==========

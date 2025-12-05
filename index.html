@@ -2,7 +2,10 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Lettore Spartiti - Auto Scroll</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -46,12 +49,17 @@
         </div>
     </main>
 
+    <!-- Debug panel (rimuovi dopo aver testato) -->
+    <div id="debugPanel" style="position: fixed; top: 60px; right: 10px; background: rgba(0,0,0,0.8); color: lime; padding: 10px; font-size: 11px; border-radius: 8px; max-width: 200px; z-index: 9999; display: none; font-family: monospace;">
+        <div id="debugInfo"></div>
+    </div>
+
     <!-- FOOTER: Pannello di controllo scroll -->
     <footer id="controls" style="display: none;">
         <div class="controls-wrapper">
             <!-- Pulsante Play/Pause -->
-            <button id="playPauseBtn" class="btn-control">
-                <span id="playIcon">▶️</span>
+            <button id="playPauseBtn" class="btn-control btn-play-pause">
+                <span id="playIcon" style="font-size: 1.8rem;">▶️</span>
             </button>
 
             <!-- Slider velocità scroll -->
@@ -62,10 +70,14 @@
             </div>
 
             <!-- Pulsante reset (torna all'inizio) -->
-            <button id="resetBtn" class="btn-control" title="Torna all'inizio">⟲</button>
+            <button id="resetBtn" class="btn-control" title="Torna all'inizio">
+                <span style="font-size: 1.8rem;">⟲</span>
+            </button>
             
             <!-- Pulsante torna al menu -->
-            <button id="changeFileBtn" class="btn-control" title="Torna al menu">🔙</button>
+            <button id="changeFileBtn" class="btn-control" title="Torna al menu">
+                <span style="font-size: 1.8rem;">🔙</span>
+            </button>
         </div>
     </footer>
 
