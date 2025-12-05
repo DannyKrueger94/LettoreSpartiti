@@ -330,42 +330,49 @@ footer {
         padding: 40px 20px;
     }
     
-    /* Footer più compatto */
+    /* Footer più compatto ma sempre visibile */
     footer {
-        padding: 10px 8px;
+        padding: 12px 8px;
+        min-height: 80px;
     }
     
     .controls-wrapper {
         gap: 8px;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
+        justify-content: center;
     }
     
-    /* Controlli più piccoli */
+    /* Controlli più piccoli ma visibili */
     .btn-control {
-        min-height: 48px;
-        min-width: 48px;
-        font-size: 1.3rem;
-        padding: 8px;
+        min-height: 50px !important;
+        min-width: 50px !important;
+        font-size: 1.4rem;
+        padding: 10px;
     }
     
     .btn-play-pause {
-        min-height: 56px;
-        min-width: 56px;
+        min-height: 60px !important;
+        min-width: 60px !important;
+    }
+    
+    .btn-control span {
+        display: block;
     }
     
     /* Controllo velocità compatto */
     .speed-control {
-        padding: 10px 16px;
-        gap: 10px;
+        padding: 12px 18px;
+        gap: 12px;
+        flex: 0 0 auto;
     }
     
     .speed-control label {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
     }
     
     #speedSlider {
-        width: 100px;
-        height: 8px;
+        width: 120px;
+        height: 10px;
     }
     
     #speedSlider::-webkit-slider-thumb {
