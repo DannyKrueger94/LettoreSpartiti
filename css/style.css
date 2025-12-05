@@ -310,55 +310,82 @@ footer {
 
 /* ========== RESPONSIVE TABLET/MOBILE ========== */
 @media (max-width: 768px) {
+    /* Header più compatto */
+    header {
+        padding: 10px 12px;
+    }
+    
     header h1 {
-        font-size: 1.2rem;
+        font-size: 1rem;
+    }
+    
+    .control-btn {
+        min-height: 36px;
+        min-width: 36px;
+        padding: 6px;
+        font-size: 1rem;
     }
     
     .upload-box {
         padding: 40px 20px;
     }
     
+    /* Footer più compatto */
+    footer {
+        padding: 10px 8px;
+    }
+    
     .controls-wrapper {
-        gap: 10px;
+        gap: 8px;
+        flex-wrap: nowrap;
     }
     
-    .speed-control {
-        width: 100%;
-        justify-content: center;
-        /* Aumenta area touch su mobile */
-        padding: 20px 28px;
-    }
-    
-    #speedSlider {
-        flex: 1;
-        max-width: 200px;
-        /* Aumenta altezza per touch migliore */
-        height: 12px;
-    }
-    
-    #speedSlider::-webkit-slider-thumb {
-        width: 32px;
-        height: 32px;
-    }
-    
-    #speedSlider::-moz-range-thumb {
-        width: 32px;
-        height: 32px;
-    }
-    
+    /* Controlli più piccoli */
     .btn-control {
-        min-height: 70px;
-        min-width: 70px;
-        font-size: 1.8rem;
+        min-height: 48px;
+        min-width: 48px;
+        font-size: 1.3rem;
+        padding: 8px;
     }
     
     .btn-play-pause {
-        min-height: 80px;
-        min-width: 80px;
+        min-height: 56px;
+        min-width: 56px;
     }
     
-    footer {
-        padding: 18px 12px;
+    /* Controllo velocità compatto */
+    .speed-control {
+        padding: 10px 16px;
+        gap: 10px;
+    }
+    
+    .speed-control label {
+        font-size: 0.85rem;
+    }
+    
+    #speedSlider {
+        width: 100px;
+        height: 8px;
+    }
+    
+    #speedSlider::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+    }
+    
+    #speedSlider::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+    }
+    
+    #speedValue {
+        font-size: 0.95rem;
+        min-width: 42px;
+    }
+    
+    /* PDF container con più spazio */
+    .pdf-container {
+        padding: 10px;
     }
 }
 

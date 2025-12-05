@@ -117,7 +117,7 @@ function setupEventListeners() {
 
     // Reset (torna all'inizio)
     elements.resetBtn.addEventListener('click', () => {
-        mainContainer.scrollTop = 0;
+        mainContainer.scrollTo({ top: 0, behavior: 'smooth' });
         stopScroll();
     });
 
@@ -208,7 +208,8 @@ function showPDFSection() {
     elements.uploadSection.style.display = 'none';
     elements.pdfContainer.style.display = 'flex';
     elements.controls.style.display = 'block';
-    mainContainer.scrollTop = 0; // Torna all'inizio
+    mainContainer.scrollTo({ top: 0, behavior: 'auto' }); // Torna all'inizio
+    updateDebugPanel('PDF caricato e pronto');
 }
 
 function showUploadSection() {
@@ -265,8 +266,15 @@ function startScroll() {
         // Scrolla solo quando abbiamo accumulato almeno 1 pixel intero
         if (scrollAccumulator >= 1) {
             const pixelsToScroll = Math.floor(scrollAccumulator);
-            mainContainer.scrollTop += pixelsToScroll;
+            
+            // USA scrollBy invece di scrollTop per compatibilità mobile
+            mainContainer.scrollBy({
+                top: pixelsToScroll,
+                behavior: 'auto' // 'auto' invece di 'smooth' per precisione
+            });
+            
             scrollAccumulator -= pixelsToScroll; // Mantieni il resto decimale
+            updateDebugPanel(`Scrolling ${pixelsToScroll}px`);
         }
 
         // Verifica se siamo alla fine
@@ -373,8 +381,9 @@ function toggleFullscreen() {
 
 // Fallback per iOS che non supporta fullscreen standard
 function tryIOSFullscreenFallback() {
-    console.log('📱 Usando fallback iOS');
-    alert('Su iOS/Safari:\n\n1. Tocca il pulsante Condividi (quadrato con freccia)\n2. Scorri e tocca "Aggiungi a Home"\n3. Apri l\'app dalla Home per esperienza fullscreen');
+    console.log('📱 Usando fallback iOS - fullscreen non disponibile');
+    // Non mostrare più l'alert fastidioso
+    // Su iOS il fullscreen vero non è supportato nei browser
 }
 
 // ========== UTILITY ==========
