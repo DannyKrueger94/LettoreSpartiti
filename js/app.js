@@ -103,26 +103,48 @@ function setupEventListeners() {
 
     // Gestione tocco su tablet: tocca lo schermo per play/pause
     mainContainer.addEventListener('click', (e) => {
-        // Solo se il PDF è caricato e non hai cliccato sui controlli
+        // Solo se il PDF è caricato e non hai cliccato sui controlli o sullo slider
         if (elements.pdfContainer.style.display !== 'none' && 
             e.target.tagName !== 'BUTTON' && 
-            e.target.tagName !== 'INPUT') {
+            e.target.tagName !== 'INPUT' &&
+            e.target.tagName !== 'LABEL' &&
+            !e.target.closest('.speed-control')) { // Ignora click sulla sezione velocità
             toggleScroll();
         }
     });
 
-    // Scroll manuale: se scrolli a mano, metti in pausa
+    // Scroll manuale: se scrolli a mano, metti in pausa (solo su desktop)
+    let scrollTimeout = null;
+    let lastScrollTop = 0;
+    
     mainContainer.addEventListener('scroll', () => {
+        // Verifica se è scroll manuale (non causato da auto-scroll)
+        const currentScrollTop = mainContainer.scrollTop;
+        
         if (isScrolling) {
-            // Rileva scroll manuale durante auto-scroll
-            const atBottom = mainContainer.scrollTop + mainContainer.clientHeight >= 
+            // Se arrivi alla fine, ferma lo scroll
+            const atBottom = currentScrollTop + mainContainer.clientHeight >= 
                             mainContainer.scrollHeight - 10;
             
-            // Se arrivi alla fine, ferma lo scroll
             if (atBottom) {
                 stopScroll();
+                return;
+            }
+            
+            // Su touch device, rileva scroll manuale significativo
+            const scrollDiff = Math.abs(currentScrollTop - lastScrollTop);
+            if (scrollDiff > 50) { // Scroll manuale > 50px
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    // Verifica se l'utente sta ancora scrollando manualmente
+                    if (Math.abs(mainContainer.scrollTop - currentScrollTop) < 5) {
+                        lastScrollTop = mainContainer.scrollTop;
+                    }
+                }, 150);
             }
         }
+        
+        lastScrollTop = currentScrollTop;
     });
 }
 
@@ -260,14 +282,36 @@ function toggleScroll() {
 
 // ========== FULLSCREEN ==========
 function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        // Entra in fullscreen
-        document.documentElement.requestFullscreen().catch(err => {
-            console.error('Errore fullscreen:', err);
-        });
+    const elem = document.documentElement;
+    
+    // Verifica se siamo già in fullscreen (multi-browser)
+    const isFullscreen = document.fullscreenElement || 
+                         document.webkitFullscreenElement || 
+                         document.mozFullScreenElement ||
+                         document.msFullscreenElement;
+    
+    if (!isFullscreen) {
+        // Entra in fullscreen - supporto multi-browser
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().catch(err => console.error('Errore fullscreen:', err));
+        } else if (elem.webkitRequestFullscreen) { // Safari/iOS
+            elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+            elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+            elem.msRequestFullscreen();
+        }
     } else {
-        // Esci da fullscreen
-        document.exitFullscreen();
+        // Esci da fullscreen - supporto multi-browser
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
     }
 }
 

@@ -318,19 +318,49 @@ footer {
     .speed-control {
         width: 100%;
         justify-content: center;
+        /* Aumenta area touch su mobile */
+        padding: 20px 28px;
     }
     
     #speedSlider {
         flex: 1;
         max-width: 200px;
+        /* Aumenta altezza per touch migliore */
+        height: 12px;
+    }
+    
+    #speedSlider::-webkit-slider-thumb {
+        width: 32px;
+        height: 32px;
+    }
+    
+    #speedSlider::-moz-range-thumb {
+        width: 32px;
+        height: 32px;
     }
 }
 
 /* ========== FULLSCREEN MODE ========== */
+:fullscreen,
+:-webkit-full-screen,
+:-moz-full-screen,
+:-ms-fullscreen {
+    background-color: var(--bg-color);
+}
+
 :fullscreen main,
 :-webkit-full-screen main,
-:-moz-full-screen main {
+:-moz-full-screen main,
+:-ms-fullscreen main {
     background-color: var(--bg-color);
+}
+
+/* Fix iOS Safari fullscreen */
+@supports (-webkit-touch-callout: none) {
+    body {
+        /* Previeni zoom su double tap */
+        touch-action: manipulation;
+    }
 }
 
 /* ========== ANIMAZIONI ========== */
