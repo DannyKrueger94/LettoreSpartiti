@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Mobile - Lettore Spartiti</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            padding: 20px;
+        }
+        .info-box {
+            background: #1e293b;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #6366f1;
+        }
+        .info-box h2 {
+            color: #818cf8;
+            margin-bottom: 10px;
+        }
+        .info-box p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+        button {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            margin: 10px 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        #testArea {
+            background: #334155;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            min-height: 300px;
+        }
+        .success { color: #22c55e; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Mobile - Lettore Spartiti</h1>
+    
+    <div class="info-box">
+        <h2>📱 Info Dispositivo</h2>
+        <p><strong>User Agent:</strong> <span id="userAgent"></span></p>
+        <p><strong>Larghezza schermo:</strong> <span id="screenWidth"></span>px</p>
+        <p><strong>Altezza schermo:</strong> <span id="screenHeight"></span>px</p>
+        <p><strong>Touch supportato:</strong> <span id="touchSupport"></span></p>
+    </div>
+
+    <div class="info-box">
+        <h2>🎯 Test Funzionalità</h2>
+        <button onclick="testScrollBy()">Test scrollBy()</button>
+        <button onclick="testScrollTop()">Test scrollTop</button>
+        <button onclick="testRequestAnimationFrame()">Test Animation Frame</button>
+        <button onclick="window.location.href='index.html'">↩️ Torna all'App Principale</button>
+    </div>
+
+    <div class="info-box">
+        <h2>📊 Risultati Test</h2>
+        <div id="testArea">
+            <p>Premi i pulsanti sopra per testare...</p>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <h2>📋 CSS Test - Footer Controls</h2>
+        <div style="background: #1e293b; padding: 20px; border: 2px solid #6366f1; border-radius: 8px;">
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button style="min-height: 60px; min-width: 60px; border-radius: 50%; width: 60px; padding: 0;">▶️</button>
+                <button style="min-height: 50px; min-width: 50px; border-radius: 50%; width: 50px; padding: 0;">⟲</button>
+                <button style="min-height: 50px; min-width: 50px; border-radius: 50%; width: 50px; padding: 0;">🔙</button>
+            </div>
+            <p style="margin-top: 15px; text-align: center;">☝️ Vedi questi pulsanti?</p>
+        </div>
+    </div>
+
+    <script>
+        // Info dispositivo
+        document.getElementById('userAgent').textContent = navigator.userAgent;
+        document.getElementById('screenWidth').textContent = window.innerWidth;
+        document.getElementById('screenHeight').textContent = window.innerHeight;
+        document.getElementById('touchSupport').textContent = 'ontouchstart' in window ? 'SÌ ✅' : 'NO ❌';
+
+        const testArea = document.getElementById('testArea');
+
+        function log(message, type = 'info') {
+            const p = document.createElement('p');
+            p.className = type;
+            p.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            testArea.appendChild(p);
+            console.log(message);
+        }
+
+        function testScrollBy() {
+            testArea.innerHTML = '';
+            log('🔄 Test scrollBy()...', 'warning');
+            
+            try {
+                // Crea contenuto scrollabile
+                testArea.style.height = '200px';
+                testArea.style.overflow = 'auto';
+                testArea.innerHTML = '<div style="height: 1000px; background: linear-gradient(to bottom, #6366f1, #ec4899);"><p style="padding: 20px;">Contenuto lungo per testare scroll...</p></div>';
+                
+                setTimeout(() => {
+                    const initialScroll = testArea.scrollTop;
+                    log(`Scroll iniziale: ${initialScroll}px`, 'info');
+                    
+                    testArea.scrollBy({ top: 50, behavior: 'auto' });
+                    
+                    setTimeout(() => {
+                        const finalScroll = testArea.scrollTop;
+                        log(`Scroll finale: ${finalScroll}px`, 'info');
+                        
+                        if (finalScroll > initialScroll) {
+                            log('✅ scrollBy() FUNZIONA!', 'success');
+                        } else {
+                            log('❌ scrollBy() NON funziona', 'error');
+                        }
+                    }, 100);
+                }, 500);
+            } catch (error) {
+                log('❌ Errore: ' + error.message, 'error');
+            }
+        }
+
+        function testScrollTop() {
+            testArea.innerHTML = '';
+            log('🔄 Test scrollTop...', 'warning');
+            
+            try {
+                testArea.style.height = '200px';
+                testArea.style.overflow = 'auto';
+                testArea.innerHTML = '<div style="height: 1000px; background: linear-gradient(to bottom, #ec4899, #6366f1);"><p style="padding: 20px;">Test scrollTop...</p></div>';
+                
+                setTimeout(() => {
+                    const initialScroll = testArea.scrollTop;
+                    log(`Scroll iniziale: ${initialScroll}px`, 'info');
+                    
+                    testArea.scrollTop += 50;
+                    
+                    setTimeout(() => {
+                        const finalScroll = testArea.scrollTop;
+                        log(`Scroll finale: ${finalScroll}px`, 'info');
+                        
+                        if (finalScroll > initialScroll) {
+                            log('✅ scrollTop FUNZIONA!', 'success');
+                        } else {
+                            log('❌ scrollTop NON funziona', 'error');
+                        }
+                    }, 100);
+                }, 500);
+            } catch (error) {
+                log('❌ Errore: ' + error.message, 'error');
+            }
+        }
+
+        function testRequestAnimationFrame() {
+            testArea.innerHTML = '';
+            log('🔄 Test requestAnimationFrame...', 'warning');
+            
+            let count = 0;
+            let animationId;
+            
+            function animate() {
+                count++;
+                log(`Frame ${count}`, 'info');
+                
+                if (count < 60) {
+                    animationId = requestAnimationFrame(animate);
+                } else {
+                    log('✅ requestAnimationFrame funziona! (60 frames eseguiti)', 'success');
+                }
+            }
+            
+            try {
+                animationId = requestAnimationFrame(animate);
+            } catch (error) {
+                log('❌ Errore: ' + error.message, 'error');
+            }
+        }
+
+        // Log automatico iniziale
+        log('📱 Pagina di debug caricata', 'success');
+        log('Esegui i test sopra per diagnosticare il problema', 'warning');
+    </script>
+</body>
+</html>
