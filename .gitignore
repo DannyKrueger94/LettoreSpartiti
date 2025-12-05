@@ -1,0 +1,12 @@
+# File temporanei
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Non ignorare i PDF nella cartella spartiti (vogliamo caricarli!)
+# spartiti/*.pdf

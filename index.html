@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lettore Spartiti - Auto Scroll</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- HEADER: Barra superiore con titolo e controlli -->
+    <header>
+        <h1>🎸 Lettore Spartiti</h1>
+        <button id="fullscreenBtn" class="control-btn" title="Schermo intero">⛶</button>
+    </header>
+
+    <!-- MAIN CONTAINER: Area principale dove visualizzeremo lo spartito -->
+    <main>
+        <!-- Sezione di caricamento file -->
+        <div id="uploadSection" class="upload-section">
+            <!-- Libreria spartiti precaricati -->
+            <div class="library-section">
+                <h2 class="library-title">📚 La Mia Libreria</h2>
+                <div id="libraryContainer" class="library-grid">
+                    <!-- Popolato dinamicamente da spartiti-library.js -->
+                </div>
+            </div>
+            
+            <!-- Separatore -->
+            <div class="section-divider">
+                <span>oppure</span>
+            </div>
+            
+            <!-- Upload manuale -->
+            <div class="upload-box">
+                <p class="upload-icon">📄</p>
+                <h2>Carica nuovo spartito</h2>
+                <p>Clicca o trascina qui un file PDF</p>
+                <input type="file" id="fileInput" accept="application/pdf" hidden>
+                <button id="uploadBtn" class="btn-primary">Scegli File PDF</button>
+            </div>
+        </div>
+
+        <!-- Contenitore per visualizzare il PDF (inizialmente nascosto) -->
+        <div id="pdfContainer" class="pdf-container" style="display: none;">
+            <canvas id="pdfCanvas"></canvas>
+        </div>
+    </main>
+
+    <!-- FOOTER: Pannello di controllo scroll -->
+    <footer id="controls" style="display: none;">
+        <div class="controls-wrapper">
+            <!-- Pulsante Play/Pause -->
+            <button id="playPauseBtn" class="btn-control">
+                <span id="playIcon">▶️</span>
+            </button>
+
+            <!-- Slider velocità scroll -->
+            <div class="speed-control">
+                <label for="speedSlider">Velocità</label>
+                <input type="range" id="speedSlider" min="0.1" max="1.5" value="0.5" step="0.1">
+                <span id="speedValue">x0.5</span>
+            </div>
+
+            <!-- Pulsante reset (torna all'inizio) -->
+            <button id="resetBtn" class="btn-control" title="Torna all'inizio">⟲</button>
+            
+            <!-- Pulsante cambia file -->
+            <button id="changeFileBtn" class="btn-control" title="Cambia spartito">📁</button>
+        </div>
+    </footer>
+
+    <!-- Includiamo PDF.js dalla CDN (libreria Mozilla per leggere PDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- I nostri script JavaScript -->
+    <script src="js/pdfHandler.js"></script>
+    <script src="js/spartiti-library.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
