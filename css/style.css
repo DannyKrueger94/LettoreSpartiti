@@ -29,7 +29,13 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh; /* Altezza piena dello schermo */
+    /* Fix iOS Safari viewport */
+    height: -webkit-fill-available;
+    min-height: 100vh;
     overflow: hidden; /* Previene lo scroll del body */
+    /* Fix iOS rubber band effect */
+    position: fixed;
+    width: 100%;
 }
 
 /* ========== HEADER ========== */
@@ -61,6 +67,10 @@ main {
     position: relative;
     /* Scroll fluido e naturale */
     scroll-behavior: smooth;
+    /* Fix iOS momentum scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* Fix iOS scroll */
+    overscroll-behavior: contain;
 }
 
 /* ========== SEZIONE UPLOAD ========== */
@@ -426,11 +436,39 @@ footer {
     background-color: var(--bg-color);
 }
 
-/* Fix iOS Safari fullscreen */
+/* ========== FIX iOS SAFARI SPECIFICI ========== */
 @supports (-webkit-touch-callout: none) {
+    /* Safari iOS detected */
     body {
         /* Previeni zoom su double tap */
         touch-action: manipulation;
+    }
+    
+    main {
+        /* Fix altezza iOS */
+        height: calc(100vh - 120px);
+        min-height: calc(100vh - 120px);
+    }
+    
+    footer {
+        /* Footer sempre visibile su iOS */
+        position: relative;
+        z-index: 999;
+    }
+    
+    .btn-control {
+        /* Pulsanti più grandi su iOS */
+        min-height: 54px !important;
+        min-width: 54px !important;
+        width: 54px !important;
+        height: 54px !important;
+    }
+    
+    .btn-play-pause {
+        min-height: 64px !important;
+        min-width: 64px !important;
+        width: 64px !important;
+        height: 64px !important;
     }
 }
 

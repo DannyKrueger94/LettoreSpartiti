@@ -51,9 +51,24 @@ window.addEventListener('DOMContentLoaded', () => {
     mainContainer = document.querySelector('main');
     setupEventListeners();
     
+    // Rileva iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
     // Mostra debug su mobile
     if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
-        updateDebugPanel('App caricata su mobile');
+        updateDebugPanel(`App caricata su ${isIOS ? 'iOS' : 'Android'}`);
+    }
+    
+    // Fix iOS viewport height
+    if (isIOS) {
+        console.log('📱 iOS rilevato - applicando fix specifici');
+        const setIOSHeight = () => {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+        setIOSHeight();
+        window.addEventListener('resize', setIOSHeight);
+        window.addEventListener('orientationchange', setIOSHeight);
     }
 });
 
@@ -267,8 +282,18 @@ function startScroll() {
         if (scrollAccumulator >= 1) {
             const pixelsToScroll = Math.floor(scrollAccumulator);
             
+            // Salva posizione corrente
+            const currentScroll = mainContainer.scrollTop;
+            
             // USA scrollTop che funziona meglio su mobile
-            mainContainer.scrollTop += pixelsToScroll;
+            mainContainer.scrollTop = currentScroll + pixelsToScroll;
+            
+            // Verifica che lo scroll sia avvenuto (fix per iOS che a volte ignora)
+            if (mainContainer.scrollTop === currentScroll && pixelsToScroll > 0) {
+                console.warn('⚠️ Scroll bloccato su iOS, forzo...');
+                // Forza lo scroll in modo diverso per iOS
+                mainContainer.scrollTo(0, currentScroll + pixelsToScroll);
+            }
             
             scrollAccumulator -= pixelsToScroll; // Mantieni il resto decimale
             updateDebugPanel(`Scrolling ${pixelsToScroll}px`);
