@@ -27,49 +27,11 @@ const elements = {
     uploadBox: document.querySelector('.upload-box')
 };
 
-// ========== DEBUG PANEL ==========
-function updateDebugPanel(message) {
-    const debugPanel = document.getElementById('debugPanel');
-    const debugInfo = document.getElementById('debugInfo');
-    if (debugPanel && debugInfo) {
-        debugPanel.style.display = 'block';
-        const timestamp = new Date().toLocaleTimeString();
-        debugInfo.innerHTML = `
-            <strong>${timestamp}</strong><br>
-            ${message}<br>
-            Speed: x${scrollSpeed.toFixed(1)}<br>
-            Scrolling: ${isScrolling ? 'YES' : 'NO'}<br>
-            Accumulator: ${scrollAccumulator.toFixed(2)}<br>
-            ScrollTop: ${mainContainer ? Math.floor(mainContainer.scrollTop) : 'N/A'}px
-        `;
-    }
-}
-
 // ========== INIZIALIZZAZIONE ==========
 window.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 App inizializzata');
     mainContainer = document.querySelector('main');
     setupEventListeners();
-    
-    // Rileva iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
-    // Mostra debug su mobile
-    if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
-        updateDebugPanel(`App caricata su ${isIOS ? 'iOS' : 'Android'}`);
-    }
-    
-    // Fix iOS viewport height
-    if (isIOS) {
-        console.log('📱 iOS rilevato - applicando fix specifici');
-        const setIOSHeight = () => {
-            const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        };
-        setIOSHeight();
-        window.addEventListener('resize', setIOSHeight);
-        window.addEventListener('orientationchange', setIOSHeight);
-    }
 });
 
 // ========== EVENT LISTENERS ==========
@@ -110,13 +72,7 @@ function setupEventListeners() {
     // ===== CONTROLLI SCROLL =====
     
     // Play/Pause
-    elements.playPauseBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('🎯 Click su Play/Pause button');
-        updateDebugPanel('Click Play/Pause');
-        toggleScroll();
-    });
+    elements.playPauseBtn.addEventListener('click', toggleScroll);
 
     // Slider velocità
     elements.speedSlider.addEventListener('input', (e) => {
@@ -132,7 +88,7 @@ function setupEventListeners() {
 
     // Reset (torna all'inizio)
     elements.resetBtn.addEventListener('click', () => {
-        mainContainer.scrollTo({ top: 0, behavior: 'smooth' });
+        mainContainer.scrollTop = 0;
         stopScroll();
     });
 
@@ -223,8 +179,7 @@ function showPDFSection() {
     elements.uploadSection.style.display = 'none';
     elements.pdfContainer.style.display = 'flex';
     elements.controls.style.display = 'block';
-    mainContainer.scrollTo({ top: 0, behavior: 'auto' }); // Torna all'inizio
-    updateDebugPanel('PDF caricato e pronto');
+    mainContainer.scrollTop = 0;
 }
 
 function showUploadSection() {
@@ -265,10 +220,7 @@ function startScroll() {
 
     // Funzione di animazione che viene chiamata ~60 volte al secondo
     function animate() {
-        if (!isScrolling) {
-            console.log('⚠️ Scroll interrotto - isScrolling è false');
-            return;
-        }
+        if (!isScrolling) return;
 
         // Calcola quanto scrollare in base alla velocità
         // scrollSpeed è un moltiplicatore (0.1x - 1.5x)
@@ -281,22 +233,8 @@ function startScroll() {
         // Scrolla solo quando abbiamo accumulato almeno 1 pixel intero
         if (scrollAccumulator >= 1) {
             const pixelsToScroll = Math.floor(scrollAccumulator);
-            
-            // Salva posizione corrente
-            const currentScroll = mainContainer.scrollTop;
-            
-            // USA scrollTop che funziona meglio su mobile
-            mainContainer.scrollTop = currentScroll + pixelsToScroll;
-            
-            // Verifica che lo scroll sia avvenuto (fix per iOS che a volte ignora)
-            if (mainContainer.scrollTop === currentScroll && pixelsToScroll > 0) {
-                console.warn('⚠️ Scroll bloccato su iOS, forzo...');
-                // Forza lo scroll in modo diverso per iOS
-                mainContainer.scrollTo(0, currentScroll + pixelsToScroll);
-            }
-            
-            scrollAccumulator -= pixelsToScroll; // Mantieni il resto decimale
-            updateDebugPanel(`Scrolling ${pixelsToScroll}px`);
+            mainContainer.scrollTop += pixelsToScroll;
+            scrollAccumulator -= pixelsToScroll;
         }
 
         // Verifica se siamo alla fine
@@ -337,9 +275,6 @@ function stopScroll() {
  * Toggle play/pause
  */
 function toggleScroll() {
-    console.log(`🔄 Toggle scroll - stato attuale: ${isScrolling ? 'PLAYING' : 'PAUSED'}`);
-    updateDebugPanel(`Toggle: ${isScrolling ? 'STOP' : 'START'}`);
-    
     if (isScrolling) {
         stopScroll();
     } else {
@@ -350,62 +285,27 @@ function toggleScroll() {
 // ========== FULLSCREEN ==========
 function toggleFullscreen() {
     const elem = document.documentElement;
-    
-    console.log('🔲 Tentativo fullscreen...');
-    
-    // Verifica se siamo già in fullscreen (multi-browser)
     const isFullscreen = document.fullscreenElement || 
                          document.webkitFullscreenElement || 
-                         document.mozFullScreenElement ||
-                         document.msFullscreenElement;
+                         document.mozFullScreenElement;
     
     if (!isFullscreen) {
-        console.log('📱 Entrando in fullscreen...');
-        // Entra in fullscreen - supporto multi-browser
         if (elem.requestFullscreen) {
-            elem.requestFullscreen()
-                .then(() => console.log('✅ Fullscreen attivato'))
-                .catch(err => {
-                    console.error('❌ Errore fullscreen standard:', err);
-                    // Fallback per iOS: nascondi barre browser
-                    tryIOSFullscreenFallback();
-                });
-        } else if (elem.webkitRequestFullscreen) { // Safari iOS
+            elem.requestFullscreen().catch(err => console.error('Errore fullscreen:', err));
+        } else if (elem.webkitRequestFullscreen) {
             elem.webkitRequestFullscreen();
-            console.log('✅ Fullscreen webkit attivato');
-        } else if (elem.webkitEnterFullscreen) { // iOS alternativo
-            elem.webkitEnterFullscreen();
-            console.log('✅ Fullscreen webkit enter attivato');
-        } else if (elem.mozRequestFullScreen) { // Firefox
+        } else if (elem.mozRequestFullScreen) {
             elem.mozRequestFullScreen();
-            console.log('✅ Fullscreen moz attivato');
-        } else if (elem.msRequestFullscreen) { // IE/Edge
-            elem.msRequestFullscreen();
-            console.log('✅ Fullscreen ms attivato');
-        } else {
-            console.warn('⚠️ Fullscreen API non supportata');
-            tryIOSFullscreenFallback();
         }
     } else {
-        console.log('📱 Uscendo da fullscreen...');
-        // Esci da fullscreen - supporto multi-browser
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
         } else if (document.mozCancelFullScreen) {
             document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
         }
     }
-}
-
-// Fallback per iOS che non supporta fullscreen standard
-function tryIOSFullscreenFallback() {
-    console.log('📱 Usando fallback iOS - fullscreen non disponibile');
-    // Non mostrare più l'alert fastidioso
-    // Su iOS il fullscreen vero non è supportato nei browser
 }
 
 // ========== UTILITY ==========
@@ -415,15 +315,5 @@ document.addEventListener('dblclick', (e) => {
     e.preventDefault();
 }, { passive: false });
 
-// Mostra info di debug in console
-console.log(`
-╔══════════════════════════════════════╗
-║   🎸 LETTORE SPARTITI v1.0          ║
-║   Made with ❤️ for guitarists       ║
-╚══════════════════════════════════════╝
-
-📱 Tips:
-- Tocca lo schermo per play/pause
-- Usa lo slider per regolare la velocità
-- Premi ⛶ per schermo intero
-`);
+// Log iniziale
+console.log('🎸 Lettore Spartiti - Ready!');
