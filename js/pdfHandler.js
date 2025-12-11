@@ -43,7 +43,7 @@ class PDFHandler {
             return true;
         } catch (error) {
             console.error('❌ Errore nel caricamento PDF:', error);
-            alert('Errore nel caricamento del PDF. Assicurati che sia un file valido.');
+            Toast.error('Errore nel caricamento del PDF. Assicurati che sia un file valido.');
             return false;
         }
     }

@@ -2,6 +2,48 @@
    APP.JS - Logica principale dell'applicazione
    ======================================== */
 
+// ========== SISTEMA NOTIFICHE TOAST ==========
+const Toast = {
+    container: null,
+    
+    init() {
+        if (!this.container) {
+            this.container = document.createElement('div');
+            this.container.className = 'toast-container';
+            document.body.appendChild(this.container);
+        }
+    },
+    
+    show(message, type = 'info', duration = 3000) {
+        this.init();
+        
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+        
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <span class="toast-icon">${icons[type] || icons.info}</span>
+            <span class="toast-message">${message}</span>
+        `;
+        
+        this.container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, duration);
+    },
+    
+    success(message, duration) { this.show(message, 'success', duration); },
+    error(message, duration) { this.show(message, 'error', duration); },
+    warning(message, duration) { this.show(message, 'warning', duration); },
+    info(message, duration) { this.show(message, 'info', duration); }
+};
+
 // ========== VARIABILI GLOBALI ==========
 let isScrolling = false;        // Stato play/pause
 let scrollSpeed = 0.5;          // Velocità corrente (0.1-1.5x)
@@ -66,7 +108,7 @@ function setupEventListeners() {
         if (file && file.type === 'application/pdf') {
             handleFileSelect(file);
         } else {
-            alert('Per favore, carica solo file PDF');
+            Toast.error('Per favore, carica solo file PDF');
         }
     });
 
@@ -114,38 +156,17 @@ function setupEventListeners() {
         }
     });
 
-    // Scroll manuale: se scrolli a mano, metti in pausa (solo su desktop)
-    let scrollTimeout = null;
-    let lastScrollTop = 0;
-    
+    // Scroll manuale: se arrivi alla fine, ferma lo scroll
     mainContainer.addEventListener('scroll', () => {
-        // Verifica se è scroll manuale (non causato da auto-scroll)
-        const currentScrollTop = mainContainer.scrollTop;
-        
         if (isScrolling) {
-            // Se arrivi alla fine, ferma lo scroll
-            const atBottom = currentScrollTop + mainContainer.clientHeight >= 
+            const atBottom = mainContainer.scrollTop + mainContainer.clientHeight >= 
                             mainContainer.scrollHeight - 10;
             
             if (atBottom) {
                 stopScroll();
-                return;
-            }
-            
-            // Su touch device, rileva scroll manuale significativo
-            const scrollDiff = Math.abs(currentScrollTop - lastScrollTop);
-            if (scrollDiff > 50) { // Scroll manuale > 50px
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    // Verifica se l'utente sta ancora scrollando manualmente
-                    if (Math.abs(mainContainer.scrollTop - currentScrollTop) < 5) {
-                        lastScrollTop = mainContainer.scrollTop;
-                    }
-                }, 150);
+                Toast.success('Fine dello spartito raggiunta', 2000);
             }
         }
-        
-        lastScrollTop = currentScrollTop;
     });
 }
 
@@ -154,11 +175,18 @@ async function handleFileSelect(file) {
     if (!file) return;
 
     if (file.type !== 'application/pdf') {
-        alert('Per favore, seleziona un file PDF valido');
+        Toast.error('Per favore, seleziona un file PDF valido');
+        return;
+    }
+    
+    // Validazione dimensione file (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    if (file.size > maxSize) {
+        Toast.error(`Il file è troppo grande (${(file.size / 1024 / 1024).toFixed(1)}MB). Massimo 10MB.`);
         return;
     }
 
-    console.log(`📂 Caricamento file: ${file.name}`);
+    console.log(`📂 Caricamento file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
     
     // Mostra un messaggio di caricamento
     elements.uploadBox.innerHTML = '<p class="upload-icon">⏳</p><h2>Caricamento in corso...</h2>';
@@ -214,6 +242,12 @@ function resetUploadBox() {
  * Usa requestAnimationFrame per scroll fluido
  */
 function startScroll() {
+    // Fix race condition: cancella animazione precedente se esiste
+    if (scrollInterval) {
+        cancelAnimationFrame(scrollInterval);
+        scrollInterval = null;
+    }
+    
     isScrolling = true;
     elements.playIcon.textContent = '⏸️'; // Cambia icona in pausa
     scrollAccumulator = 0; // Reset accumulatore

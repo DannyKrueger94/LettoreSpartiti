@@ -80,7 +80,6 @@ function showCategoryContent(categoryName) {
         const card = document.createElement('div');
         card.className = 'spartito-card';
         card.innerHTML = `
-            <div class="spartito-icon">🎵</div>
             <div class="spartito-title">${spartito.title}</div>
             <button class="btn-load" data-file="${spartito.file}">Carica</button>
         `;
@@ -122,7 +121,19 @@ async function loadSpartitoFromLibrary(filePath) {
         }
     } catch (error) {
         console.error('❌ Errore caricamento spartito:', error);
-        alert('Errore nel caricamento dello spartito. Verifica che il file esista nella cartella spartiti/');
+        
+        // Distingui tra tipi di errore
+        let errorMessage = 'Errore nel caricamento dello spartito.';
+        
+        if (error.message.includes('404') || error.message.includes('File non trovato')) {
+            errorMessage = 'Spartito non trovato. Verifica che il file esista nella cartella spartiti/';
+        } else if (error.message.includes('403')) {
+            errorMessage = 'Accesso negato al file. Controlla i permessi.';
+        } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+            errorMessage = 'Errore di rete. Verifica la connessione internet.';
+        }
+        
+        Toast.error(errorMessage, 4000);
         resetUploadBox();
     }
 }
