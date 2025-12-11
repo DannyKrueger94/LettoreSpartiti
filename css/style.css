@@ -296,11 +296,26 @@ main {
 
 /* ========== RESPONSIVE TABLET/MOBILE ========== */
 @media (max-width: 768px) {
+    /* Fix per Android: permetti scroll su body */
+    body {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+    
+    main {
+        overflow: visible;
+        height: auto;
+        flex: none;
+    }
+    
     /* Upload section ottimizzata per mobile */
     .upload-section {
         padding: 20px 15px;
         gap: 25px;
         justify-content: flex-start;
+        height: auto;
+        min-height: auto;
     }
     
     .library-section {
