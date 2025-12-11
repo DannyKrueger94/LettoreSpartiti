@@ -135,9 +135,8 @@ async function loadSpartitoFromLibrary(filePath) {
     try {
         console.log(`📂 Caricamento spartito: ${filePath}`);
         
-        // Mostra loading
-        const uploadBox = document.querySelector('.upload-box');
-        uploadBox.innerHTML = '<p class="upload-icon">⏳</p><h2>Caricamento in corso...</h2>';
+        // Mostra toast di loading
+        Toast.info('Caricamento spartito in corso...', 2000);
         
         // Fetch del file PDF
         const response = await fetch(filePath);
@@ -149,13 +148,14 @@ async function loadSpartitoFromLibrary(filePath) {
         const blob = await response.blob();
         const file = new File([blob], filePath.split('/').pop(), { type: 'application/pdf' });
         
-        // Usa la stessa funzione di caricamento
+        // Carica il PDF
         const success = await pdfHandler.loadPDF(file);
         
         if (success) {
             showPDFSection();
+            Toast.success('Spartito caricato!', 2000);
         } else {
-            resetUploadBox();
+            Toast.error('Errore nel caricamento del PDF');
         }
     } catch (error) {
         console.error('❌ Errore caricamento spartito:', error);
