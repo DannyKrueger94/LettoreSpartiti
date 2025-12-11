@@ -35,22 +35,29 @@ body {
 /* ========== HEADER ========== */
 header {
     background: var(--control-bg);
-    padding: 18px 24px;
+    padding: 14px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: var(--shadow-md);
     z-index: 100;
     border-bottom: 2px solid var(--primary-color);
+    gap: 20px;
 }
 
-header h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.header-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 /* ========== MAIN AREA ========== */
@@ -76,11 +83,11 @@ main {
 
 .upload-box {
     text-align: center;
-    padding: 60px 40px;
+    padding: 30px 30px;
     border: 3px dashed var(--primary-color);
-    border-radius: 24px;
+    border-radius: 20px;
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-    max-width: 500px;
+    max-width: 400px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: var(--shadow-sm);
 }
@@ -93,12 +100,13 @@ main {
 }
 
 .upload-icon {
-    font-size: 4rem;
-    margin-bottom: 20px;
+    font-size: 3rem;
+    margin-bottom: 12px;
 }
 
 .upload-box h2 {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    font-size: 1.3rem;
     background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -107,8 +115,9 @@ main {
 }
 
 .upload-box p {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     opacity: 0.8;
+    font-size: 0.95rem;
 }
 
 /* ========== CONTENITORE PDF ========== */
@@ -184,39 +193,21 @@ main {
     background-color: var(--primary-color);
 }
 
-/* ========== FOOTER CONTROLLI ========== */
-footer {
-    background: var(--control-bg);
-    padding: 24px;
-    box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
-    z-index: 100;
-    border-top: 2px solid var(--primary-color);
-    backdrop-filter: blur(10px);
-    /* Fix iOS: footer sempre visibile */
-    position: relative;
-}
 
-.controls-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
 
 .btn-control {
     background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--hover-color) 100%);
     border: 2px solid transparent;
     color: var(--text-color);
-    padding: 15px;
-    font-size: 1.5rem;
+    padding: 12px;
+    font-size: 1.3rem;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 60px;
-    min-width: 60px;
-    width: 60px;
-    height: 60px;
+    min-height: 48px;
+    min-width: 48px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -230,11 +221,11 @@ footer {
 }
 
 .btn-play-pause {
-    min-height: 70px;
-    min-width: 70px;
-    width: 70px;
-    height: 70px;
-    font-size: 1.8rem;
+    min-height: 56px;
+    min-width: 56px;
+    width: 56px;
+    height: 56px;
+    font-size: 1.6rem;
 }
 
 .btn-control:hover {
@@ -252,9 +243,9 @@ footer {
 .speed-control {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--hover-color) 100%);
-    padding: 16px 28px;
+    padding: 12px 20px;
     border-radius: 50px;
     box-shadow: var(--shadow-sm);
     border: 2px solid rgba(99, 102, 241, 0.2);
@@ -320,13 +311,22 @@ footer {
 
 /* ========== RESPONSIVE TABLET/MOBILE ========== */
 @media (max-width: 768px) {
-    /* Header più compatto */
+    /* Header compatto con controlli */
     header {
         padding: 10px 12px;
+        flex-wrap: wrap;
     }
     
-    header h1 {
-        font-size: 1rem;
+    .header-icon {
+        font-size: 1.5rem;
+    }
+    
+    .header-controls {
+        flex: 1 1 100%;
+        order: 3;
+        margin-top: 10px;
+        gap: 8px;
+        flex-wrap: wrap;
     }
     
     .control-btn {
@@ -336,77 +336,57 @@ footer {
         font-size: 1rem;
     }
     
-    .upload-box {
-        padding: 40px 20px;
-    }
-    
-    /* Footer più compatto ma sempre visibile */
-    footer {
-        padding: 12px 8px;
-        min-height: 80px;
-    }
-    
-    .controls-wrapper {
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    /* Controlli più piccoli ma visibili */
     .btn-control {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.2rem;
+        padding: 8px;
+    }
+    
+    .btn-play-pause {
         min-height: 50px !important;
         min-width: 50px !important;
         width: 50px !important;
         height: 50px !important;
         font-size: 1.4rem;
-        padding: 8px;
     }
     
-    .btn-play-pause {
-        min-height: 60px !important;
-        min-width: 60px !important;
-        width: 60px !important;
-        height: 60px !important;
-        font-size: 1.6rem;
-    }
-    
-    .btn-control span {
-        display: block;
-        line-height: 1;
-    }
-    
-    /* Controllo velocità compatto */
     .speed-control {
-        padding: 12px 18px;
-        gap: 12px;
-        flex: 0 0 auto;
+        padding: 10px 16px;
+        gap: 10px;
     }
     
     .speed-control label {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
     #speedSlider {
-        width: 120px;
-        height: 10px;
+        width: 100px;
+        height: 8px;
     }
     
     #speedSlider::-webkit-slider-thumb {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
     }
     
     #speedSlider::-moz-range-thumb {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
     }
     
     #speedValue {
-        font-size: 0.95rem;
-        min-width: 42px;
+        font-size: 0.9rem;
+        min-width: 40px;
     }
     
-    /* PDF container con più spazio */
+    .upload-box {
+        padding: 25px 20px;
+        max-width: 350px;
+    }
+    
     .pdf-container {
         padding: 10px;
     }
@@ -506,6 +486,10 @@ footer {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
 }
 
 .spartito-card:hover {
@@ -524,8 +508,10 @@ footer {
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--text-color);
-    margin-bottom: 15px;
+    margin-bottom: auto;
+    margin-top: 10px;
     word-break: break-word;
+    flex-grow: 1;
 }
 
 .btn-load {
