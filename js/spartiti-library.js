@@ -28,6 +28,12 @@ function showCategories() {
     const libraryContainer = document.getElementById('libraryContainer');
     const libraryTitle = document.querySelector('.library-title');
     
+    // Resetta gli stili inline
+    libraryTitle.style.display = '';
+    libraryTitle.style.alignItems = '';
+    libraryTitle.style.justifyContent = '';
+    libraryTitle.style.gap = '';
+    
     libraryTitle.textContent = 'La mia libreria';
     currentCategory = null;
     
@@ -57,9 +63,16 @@ function showCategoryContent(categoryName) {
     const category = spartitiCategories[categoryName];
     
     currentCategory = categoryName;
+    
+    // Resetta lo stile del title per evitare conflitti
+    libraryTitle.style.display = 'flex';
+    libraryTitle.style.alignItems = 'center';
+    libraryTitle.style.justifyContent = 'center';
+    libraryTitle.style.gap = '15px';
+    
     libraryTitle.innerHTML = `
-        <button id="backToCategories" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); border: none; color: white; cursor: pointer; font-size: 0.9rem; padding: 8px 16px; border-radius: 8px; margin-right: 15px; font-weight: 600;">← Indietro</button>
-        ${categoryName}
+        <button id="backToCategories" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); border: none; color: white; cursor: pointer; font-size: 0.95rem; padding: 10px 20px; border-radius: 50px; font-weight: 600; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;">← Indietro</button>
+        <span style="background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${categoryName}</span>
     `;
     
     // Event listener per tornare alle categorie
@@ -70,6 +83,16 @@ function showCategoryContent(categoryName) {
                 e.preventDefault();
                 e.stopPropagation();
                 showCategories();
+            });
+            
+            // Hover effect
+            backBtn.addEventListener('mouseenter', () => {
+                backBtn.style.transform = 'translateY(-2px)';
+                backBtn.style.boxShadow = '0 4px 16px rgba(99, 102, 241, 0.5)';
+            });
+            backBtn.addEventListener('mouseleave', () => {
+                backBtn.style.transform = 'translateY(0)';
+                backBtn.style.boxShadow = '0 2px 8px rgba(99, 102, 241, 0.3)';
             });
         }
     }, 100);
