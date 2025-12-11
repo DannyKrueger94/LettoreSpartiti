@@ -76,12 +76,13 @@ main {
 .upload-section {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    height: 100%;
+    min-height: 100%;
     padding: 40px 20px;
     gap: 40px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .upload-box {
@@ -295,6 +296,17 @@ main {
 
 /* ========== RESPONSIVE TABLET/MOBILE ========== */
 @media (max-width: 768px) {
+    /* Upload section ottimizzata per mobile */
+    .upload-section {
+        padding: 20px 15px;
+        gap: 25px;
+        justify-content: flex-start;
+    }
+    
+    .library-section {
+        margin-bottom: 20px;
+    }
+    
     /* Header compatto */
     header {
         padding: 14px 12px;
