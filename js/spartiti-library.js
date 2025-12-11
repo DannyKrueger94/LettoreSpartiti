@@ -38,8 +38,7 @@ function showCategories() {
         const card = document.createElement('div');
         card.className = 'spartito-card category-card';
         card.innerHTML = `
-            <div class="spartito-icon" style="font-size: 4rem;">${category.icon}</div>
-            <div class="spartito-title">${categoryName}</div>
+            <div class="spartito-title" style="font-size: 1.4rem; font-weight: 700;">${categoryName}</div>
             <button class="btn-load">Apri</button>
         `;
         
@@ -59,12 +58,21 @@ function showCategoryContent(categoryName) {
     
     currentCategory = categoryName;
     libraryTitle.innerHTML = `
-        <button id="backToCategories" style="background: none; border: none; color: inherit; cursor: pointer; font-size: 1.5rem; margin-right: 15px;">🔙</button>
+        <button id="backToCategories" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); border: none; color: white; cursor: pointer; font-size: 0.9rem; padding: 8px 16px; border-radius: 8px; margin-right: 15px; font-weight: 600;">← Indietro</button>
         ${categoryName}
     `;
     
     // Event listener per tornare alle categorie
-    document.getElementById('backToCategories').addEventListener('click', showCategories);
+    setTimeout(() => {
+        const backBtn = document.getElementById('backToCategories');
+        if (backBtn) {
+            backBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showCategories();
+            });
+        }
+    }, 100);
     
     libraryContainer.innerHTML = '';
     

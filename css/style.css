@@ -453,11 +453,15 @@ main {
 
 .category-card {
     cursor: pointer;
-    min-height: 220px;
+    min-height: 180px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+    border: 3px solid var(--primary-color);
 }
 
 .category-card:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-8px) scale(1.05);
+    border-color: var(--accent-color);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(236, 72, 153, 0.25) 100%);
 }
 
 .library-grid {
@@ -513,7 +517,7 @@ main {
 }
 
 .spartito-icon {
-    display: none;
+    display: none !important;
 }
 
 .spartito-title {
