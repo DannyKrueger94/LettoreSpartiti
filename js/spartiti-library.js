@@ -78,9 +78,16 @@ function showCategoryContent(categoryName) {
     libraryTitle.style.justifyContent = 'center';
     libraryTitle.style.gap = '15px';
     
+    // Separa il testo dall'emoji per evitare che l'emoji diventi trasparente
+    const categoryText = categoryName.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+    const categoryEmoji = categoryName.match(/[\u{1F300}-\u{1F9FF}]/gu);
+    
     libraryTitle.innerHTML = `
         <button id="backToCategories" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: none; color: white !important; cursor: pointer; font-size: 0.95rem; padding: 10px 20px; border-radius: 50px; font-weight: 600; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; -webkit-text-fill-color: white !important;">← Indietro</button>
-        <span style="background: linear-gradient(135deg, #818cf8 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.8rem; font-weight: 600;">${categoryName}</span>
+        <span style="display: flex; align-items: center; gap: 10px; font-size: 1.8rem; font-weight: 600;">
+            <span style="background: linear-gradient(135deg, #818cf8 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${categoryText}</span>
+            ${categoryEmoji ? `<span style="font-size: 1.8rem;">${categoryEmoji.join('')}</span>` : ''}
+        </span>
     `;
     
     // Event listener per tornare alle categorie
