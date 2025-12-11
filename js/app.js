@@ -15,6 +15,7 @@ const elements = {
     uploadSection: document.getElementById('uploadSection'),
     pdfContainer: document.getElementById('pdfContainer'),
     controls: document.getElementById('controls'),
+    headerTitle: document.getElementById('headerTitle'),
     fileInput: document.getElementById('fileInput'),
     uploadBtn: document.getElementById('uploadBtn'),
     playPauseBtn: document.getElementById('playPauseBtn'),
@@ -178,13 +179,15 @@ async function handleFileSelect(file) {
 function showPDFSection() {
     elements.uploadSection.style.display = 'none';
     elements.pdfContainer.style.display = 'flex';
-    elements.controls.style.display = 'block';
+    elements.headerTitle.style.display = 'none';
+    elements.controls.style.display = 'flex';
     mainContainer.scrollTop = 0;
 }
 
 function showUploadSection() {
     elements.uploadSection.style.display = 'flex';
     elements.pdfContainer.style.display = 'none';
+    elements.headerTitle.style.display = 'block';
     elements.controls.style.display = 'none';
     resetUploadBox();
     elements.fileInput.value = ''; // Reset input file

@@ -35,7 +35,7 @@ body {
 /* ========== HEADER ========== */
 header {
     background: var(--control-bg);
-    padding: 20px 24px;
+    padding: 18px 24px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,6 +52,15 @@ header h1 {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin: 0;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 /* ========== MAIN AREA ========== */
@@ -187,22 +196,7 @@ main {
     background-color: var(--primary-color);
 }
 
-/* ========== FOOTER CONTROLLI ========== */
-footer {
-    background: var(--control-bg);
-    padding: 20px;
-    box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
-    z-index: 100;
-    border-top: 2px solid var(--primary-color);
-}
 
-.controls-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
 
 
 
@@ -324,19 +318,14 @@ footer {
 @media (max-width: 768px) {
     /* Header compatto */
     header {
-        padding: 16px 12px;
+        padding: 14px 12px;
     }
     
     header h1 {
         font-size: 1.3rem;
     }
     
-    /* Footer compatto */
-    footer {
-        padding: 14px 8px;
-    }
-    
-    .controls-wrapper {
+    .header-controls {
         gap: 10px;
     }
     
