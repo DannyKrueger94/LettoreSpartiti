@@ -28,7 +28,11 @@ function showCategories() {
     const libraryContainer = document.getElementById('libraryContainer');
     const libraryTitle = document.querySelector('.library-title');
     
-    // Resetta gli stili inline
+    // Ripristina TUTTI gli stili CSS originali
+    libraryTitle.style.background = '';
+    libraryTitle.style.webkitBackgroundClip = '';
+    libraryTitle.style.webkitTextFillColor = '';
+    libraryTitle.style.backgroundClip = '';
     libraryTitle.style.display = '';
     libraryTitle.style.alignItems = '';
     libraryTitle.style.justifyContent = '';
@@ -64,15 +68,19 @@ function showCategoryContent(categoryName) {
     
     currentCategory = categoryName;
     
-    // Resetta lo stile del title per evitare conflitti
+    // SOLUZIONE: Rimuovo gli stili problematici dal library-title
+    libraryTitle.style.background = 'none';
+    libraryTitle.style.webkitBackgroundClip = 'unset';
+    libraryTitle.style.webkitTextFillColor = 'unset';
+    libraryTitle.style.backgroundClip = 'unset';
     libraryTitle.style.display = 'flex';
     libraryTitle.style.alignItems = 'center';
     libraryTitle.style.justifyContent = 'center';
     libraryTitle.style.gap = '15px';
     
     libraryTitle.innerHTML = `
-        <button id="backToCategories" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); border: none; color: white; cursor: pointer; font-size: 0.95rem; padding: 10px 20px; border-radius: 50px; font-weight: 600; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;">← Indietro</button>
-        <span style="background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${categoryName}</span>
+        <button id="backToCategories" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: none; color: white !important; cursor: pointer; font-size: 0.95rem; padding: 10px 20px; border-radius: 50px; font-weight: 600; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; -webkit-text-fill-color: white !important;">← Indietro</button>
+        <span style="background: linear-gradient(135deg, #818cf8 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.8rem; font-weight: 600;">${categoryName}</span>
     `;
     
     // Event listener per tornare alle categorie
