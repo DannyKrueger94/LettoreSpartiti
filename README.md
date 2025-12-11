@@ -4,44 +4,67 @@ App web per leggere spartiti PDF mentre suoni la chitarra, con scroll automatico
 
 ## 📋 Caratteristiche
 
-✅ **Libreria spartiti integrata** - Carica i tuoi PDF nel progetto e scegli dalla collezione  
+✅ **Libreria spartiti organizzata per categorie** - Naviga tra categorie e scegli lo spartito  
+✅ **Sistema a cartelle** - Organizza i tuoi spartiti in categorie personalizzate  
 ✅ Carica spartiti in formato PDF (drag & drop o selezione file)  
 ✅ Auto-scroll fluido e continuo  
 ✅ Velocità regolabile da x0.1 a x1.5 (formato moltiplicatore)  
-✅ Play/Pause con tap sullo schermo  
+✅ Controlli sempre visibili in alto durante la lettura  
 ✅ Modalità schermo intero  
-✅ Ottimizzato per tablet e touch  
+✅ Ottimizzato per tablet Android  
 ✅ Interfaccia scura moderna con gradienti  
 
 ## 🚀 Come Usare
 
-### Aggiungi i tuoi spartiti alla libreria:
+### Aggiungi spartiti alla libreria per categorie:
 
-1. **Copia i PDF** nella cartella `spartiti/`
-2. **Apri** `js/spartiti-library.js`
-3. **Aggiungi** i tuoi spartiti all'array:
-   ```javascript
-   const spartitiLibrary = [
-       { title: "Wonderwall", file: "spartiti/wonderwall.pdf" },
-       { title: "Hotel California", file: "spartiti/hotel-california.pdf" },
-       // Aggiungi i tuoi qui...
-   ];
+1. **Crea cartelle** in `spartiti/` per organizzare i tuoi PDF:
    ```
-4. **Refresh** la pagina - gli spartiti appaiono nella libreria! 🎵
+   spartiti/
+   ├── Natale/
+   │   ├── Jingle Bells.pdf
+   │   └── All I Want For Christmas.pdf
+   ├── Classici/
+   │   ├── Stand By Me.pdf
+   │   └── Shallow.pdf
+   └── Rock/
+       └── ...
+   ```
+
+2. **Apri** `js/spartiti-library.js` e aggiungi le tue categorie:
+   ```javascript
+   const spartitiCategories = {
+       "Natale 🎄": {
+           icon: "🎄",
+           spartiti: [
+               { title: "Jingle Bells", file: "spartiti/Natale/Jingle Bells.pdf"}
+           ]
+       },
+       "Rock 🎸": {
+           icon: "🤘",
+           spartiti: [
+               { title: "Highway to Hell", file: "spartiti/Rock/Highway to Hell.pdf"}
+           ]
+       }
+   };
+   ```
+
+3. **Refresh** la pagina - vedi le categorie come card, clicca per aprire! 🎵
 
 ### Su PC (per testare):
 
 1. **Apri il file** `index.html` con un browser moderno (Chrome, Firefox, Edge)
-2. **Scegli uno spartito**:
-   - Dalla libreria precaricata (se hai aggiunto PDF)
-   - Oppure carica un nuovo file PDF (drag & drop o selezione)
-3. **Controlla lo scroll**:
+2. **Naviga nella libreria**:
+   - Vedi le categorie nella pagina principale
+   - Clicca su una categoria per vedere gli spartiti
+   - Usa 🔙 per tornare alle categorie
+   - Oppure carica un nuovo file PDF (drag & drop)
+3. **Controlla lo scroll** (quando lo spartito è aperto):
    - ▶️ Play/Pause: avvia o ferma lo scroll
-   - Slider: regola la velocità (0-10)
+   - Slider: regola la velocità (x0.1 - x1.5)
    - ⟲ Reset: torna all'inizio
-   - 📁 Cambia spartito
+   - 🔙 Torna al menu
    - ⛶ Schermo intero
-4. **Tocca lo schermo** in qualsiasi punto per play/pause rapido
 
 ### Su Tablet:
 
@@ -79,10 +102,15 @@ LettoreMusica/
 ├── js/
 │   ├── app.js             # Logica principale
 │   ├── pdfHandler.js      # Gestione PDF
-│   └── spartiti-library.js # Libreria spartiti
-├── spartiti/              # 📚 Metti qui i tuoi PDF!
-│   ├── README.md
-│   └── (i tuoi PDF)
+│   └── spartiti-library.js # Libreria spartiti con categorie
+├── spartiti/              # 📚 Organizza i tuoi PDF in cartelle!
+│   ├── Natale/
+│   │   ├── Jingle Bells.pdf
+│   │   └── All I Want For Christmas.pdf
+│   ├── Classici/
+│   │   ├── Stand By Me.pdf
+│   │   └── Shallow.pdf
+│   └── README.md
 ├── .gitignore
 └── README.md              # Questa guida
 ```
@@ -97,7 +125,10 @@ LettoreMusica/
 
 ## 💡 Tips
 
-- **Velocità ideale**: Parti da 2-3 e regola in base al tempo del brano
+- **Velocità ideale**: Parti da x0.5 e regola in base al tempo del brano
+- **Organizzazione**: Crea categorie logiche (Natale, Rock, Pop, Difficili, Facili, ecc.)
+- **Navigazione**: Usa il pulsante 🔙 per tornare sempre alla vista categorie
+- **Tablet**: Funziona perfettamente su Android, iOS non supportato
 - **Schermo intero**: Essenziale su tablet per massimizzare lo spazio
 - **Multi-pagina**: Il PDF viene renderizzato come unico scroll continuo
 - **Touch**: Tocca ovunque sullo schermo per play/pause veloce

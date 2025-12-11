@@ -37,7 +37,7 @@ header {
     background: var(--control-bg);
     padding: 18px 24px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     box-shadow: var(--shadow-md);
     z-index: 100;
@@ -446,6 +446,18 @@ main {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-card {
+    cursor: pointer;
+    min-height: 220px;
+}
+
+.category-card:hover {
+    transform: translateY(-8px) scale(1.02);
 }
 
 .library-grid {
