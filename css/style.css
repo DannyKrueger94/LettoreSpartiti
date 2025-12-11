@@ -35,29 +35,23 @@ body {
 /* ========== HEADER ========== */
 header {
     background: var(--control-bg);
-    padding: 14px 24px;
+    padding: 20px 24px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     box-shadow: var(--shadow-md);
     z-index: 100;
     border-bottom: 2px solid var(--primary-color);
-    gap: 20px;
 }
 
-.header-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-}
-
-.header-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    flex: 1;
-    max-width: 800px;
-    margin: 0 auto;
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
 }
 
 /* ========== MAIN AREA ========== */
@@ -185,12 +179,29 @@ main {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-height: 44px; /* Standard touch target size */
+    min-height: 44px;
     min-width: 44px;
 }
 
 .control-btn:hover {
     background-color: var(--primary-color);
+}
+
+/* ========== FOOTER CONTROLLI ========== */
+footer {
+    background: var(--control-bg);
+    padding: 20px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
+    z-index: 100;
+    border-top: 2px solid var(--primary-color);
+}
+
+.controls-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 
@@ -311,22 +322,22 @@ main {
 
 /* ========== RESPONSIVE TABLET/MOBILE ========== */
 @media (max-width: 768px) {
-    /* Header compatto con controlli */
+    /* Header compatto */
     header {
-        padding: 10px 12px;
-        flex-wrap: wrap;
+        padding: 16px 12px;
     }
     
-    .header-icon {
-        font-size: 1.5rem;
+    header h1 {
+        font-size: 1.3rem;
     }
     
-    .header-controls {
-        flex: 1 1 100%;
-        order: 3;
-        margin-top: 10px;
-        gap: 8px;
-        flex-wrap: wrap;
+    /* Footer compatto */
+    footer {
+        padding: 14px 8px;
+    }
+    
+    .controls-wrapper {
+        gap: 10px;
     }
     
     .control-btn {
@@ -481,7 +492,7 @@ main {
     background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--hover-color) 100%);
     border: 2px solid rgba(99, 102, 241, 0.2);
     border-radius: 16px;
-    padding: 24px;
+    padding: 30px 24px;
     text-align: center;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
@@ -489,7 +500,8 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 180px;
+    gap: 20px;
+    min-height: 200px;
 }
 
 .spartito-card:hover {
@@ -500,18 +512,19 @@ main {
 }
 
 .spartito-icon {
-    font-size: 3rem;
-    margin-bottom: 15px;
+    display: none;
 }
 
 .spartito-title {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 600;
     color: var(--text-color);
-    margin-bottom: auto;
-    margin-top: 10px;
     word-break: break-word;
     flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0;
 }
 
 .btn-load {

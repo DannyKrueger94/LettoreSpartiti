@@ -7,25 +7,9 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- HEADER: Barra superiore con icona e controlli scroll -->
+    <!-- HEADER: Titolo semplice -->
     <header>
-        <div class="header-icon">🎸</div>
-        
-        <!-- Controlli scroll (visibili solo quando c'è un PDF caricato) -->
-        <div id="controls" class="header-controls" style="display: none;">
-            <button id="playPauseBtn" class="btn-control btn-play-pause btn-round">
-                <span id="playIcon">▶️</span>
-            </button>
-            <div class="speed-control">
-                <label for="speedSlider">Velocità</label>
-                <input type="range" id="speedSlider" min="0.1" max="1.5" value="0.5" step="0.1">
-                <span id="speedValue">x0.5</span>
-            </div>
-            <button id="resetBtn" class="btn-control btn-round" title="Torna all'inizio">⟲</button>
-            <button id="changeFileBtn" class="btn-control btn-round" title="Torna al menu">🔙</button>
-        </div>
-        
-        <button id="fullscreenBtn" class="control-btn" title="Schermo intero">⛶</button>
+        <h1>Lettura Spartiti</h1>
     </header>
 
     <!-- MAIN CONTAINER: Area principale dove visualizzeremo lo spartito -->
@@ -34,7 +18,7 @@
         <div id="uploadSection" class="upload-section">
             <!-- Libreria spartiti precaricati -->
             <div class="library-section">
-                <h2 class="library-title">📚 La Mia Libreria</h2>
+                <h2 class="library-title">La Mia Libreria</h2>
                 <div id="libraryContainer" class="library-grid">
                     <!-- Popolato dinamicamente da spartiti-library.js -->
                 </div>
@@ -62,6 +46,23 @@
     </main>
 
 
+
+    <!-- FOOTER: Pannello controlli scroll (nascosto inizialmente) -->
+    <footer id="controls" style="display: none;">
+        <div class="controls-wrapper">
+            <button id="playPauseBtn" class="btn-control btn-play-pause btn-round">
+                <span id="playIcon">▶️</span>
+            </button>
+            <div class="speed-control">
+                <label for="speedSlider">Velocità</label>
+                <input type="range" id="speedSlider" min="0.1" max="1.5" value="0.5" step="0.1">
+                <span id="speedValue">x0.5</span>
+            </div>
+            <button id="resetBtn" class="btn-control btn-round" title="Torna all'inizio">⟲</button>
+            <button id="changeFileBtn" class="btn-control btn-round" title="Torna al menu">🔙</button>
+            <button id="fullscreenBtn" class="btn-control btn-round" title="Schermo intero">⛶</button>
+        </div>
+    </footer>
 
     <!-- Includiamo PDF.js dalla CDN (libreria Mozilla per leggere PDF) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
