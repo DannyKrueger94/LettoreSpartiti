@@ -8,8 +8,9 @@ const spartitiLibrary = [
     // Aggiungi i tuoi spartiti qui sotto:
     { title: "LadyGaga Shallow", file: "spartiti/LadyGaga Shallow.pdf"},
     { title: "Stand By Me - Ben E. King", file: "spartiti/Stand By Me - Ben E. King.pdf"},
-    { title: "The Nightmare Before Christmas", file: "spartiti/The Nightmare Before Christmas.pdf"},
-    { title: "All I Want For Christmas Is You", file: "spartiti/All I Want For Christmas Is You - Mariah Carey.pdf"}
+    { title: "All I Want For Christmas Is You", file: "spartiti/All I Want For Christmas Is You - Mariah Carey.pdf"},
+    { title: "Jingle Bells", file: "spartiti/Jingle Bells.pdf"}
+
     
 
     
