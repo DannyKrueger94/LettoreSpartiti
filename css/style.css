@@ -85,44 +85,7 @@ main {
     -webkit-overflow-scrolling: touch;
 }
 
-.upload-box {
-    text-align: center;
-    padding: 30px 30px;
-    border: 3px dashed var(--primary-color);
-    border-radius: 20px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-    max-width: 400px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-sm);
-}
 
-.upload-box:hover {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--primary-light);
-}
-
-.upload-icon {
-    font-size: 3rem;
-    margin-bottom: 12px;
-}
-
-.upload-box h2 {
-    margin-bottom: 8px;
-    font-size: 1.3rem;
-    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 600;
-}
-
-.upload-box p {
-    margin-bottom: 20px;
-    opacity: 0.8;
-    font-size: 0.95rem;
-}
 
 /* ========== CONTENITORE PDF ========== */
 .pdf-container {
@@ -431,13 +394,6 @@ main {
     animation: fadeIn 0.5s ease;
 }
 
-/* ========== DRAG AND DROP ========== */
-.upload-box.drag-over {
-    background-color: rgba(33, 150, 243, 0.3);
-    border-color: var(--secondary-color);
-    transform: scale(1.05);
-}
-
 /* ========== TOAST NOTIFICATIONS ========== */
 .toast-container {
     position: fixed;
@@ -634,31 +590,6 @@ main {
 .btn-load:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
-}
-
-/* ========== SEPARATORE ========== */
-.section-divider {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.section-divider::before,
-.section-divider::after {
-    content: '';
-    flex: 1;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-}
-
-.section-divider span {
-    padding: 0 20px;
 }
 
 /* ========== RESPONSIVE LIBRARY ========== */

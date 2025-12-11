@@ -58,16 +58,13 @@ const elements = {
     pdfContainer: document.getElementById('pdfContainer'),
     controls: document.getElementById('controls'),
     headerTitle: document.getElementById('headerTitle'),
-    fileInput: document.getElementById('fileInput'),
-    uploadBtn: document.getElementById('uploadBtn'),
     playPauseBtn: document.getElementById('playPauseBtn'),
     playIcon: document.getElementById('playIcon'),
     speedSlider: document.getElementById('speedSlider'),
     speedValue: document.getElementById('speedValue'),
     resetBtn: document.getElementById('resetBtn'),
     changeFileBtn: document.getElementById('changeFileBtn'),
-    fullscreenBtn: document.getElementById('fullscreenBtn'),
-    uploadBox: document.querySelector('.upload-box')
+    fullscreenBtn: document.getElementById('fullscreenBtn')
 };
 
 // ========== INIZIALIZZAZIONE ==========
@@ -79,39 +76,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ========== EVENT LISTENERS ==========
 function setupEventListeners() {
-    // Click su "Scegli File PDF"
-    elements.uploadBtn.addEventListener('click', () => {
-        elements.fileInput.click();
-    });
-
-    // Quando viene selezionato un file
-    elements.fileInput.addEventListener('change', (e) => {
-        handleFileSelect(e.target.files[0]);
-    });
-
-    // Drag and Drop - quando trascini un file sopra
-    elements.uploadBox.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        elements.uploadBox.classList.add('drag-over');
-    });
-
-    elements.uploadBox.addEventListener('dragleave', () => {
-        elements.uploadBox.classList.remove('drag-over');
-    });
-
-    // Drag and Drop - quando rilasci il file
-    elements.uploadBox.addEventListener('drop', (e) => {
-        e.preventDefault();
-        elements.uploadBox.classList.remove('drag-over');
-        
-        const file = e.dataTransfer.files[0];
-        if (file && file.type === 'application/pdf') {
-            handleFileSelect(file);
-        } else {
-            Toast.error('Per favore, carica solo file PDF');
-        }
-    });
-
     // ===== CONTROLLI SCROLL =====
     
     // Play/Pause
@@ -170,39 +134,6 @@ function setupEventListeners() {
     });
 }
 
-// ========== GESTIONE FILE PDF ==========
-async function handleFileSelect(file) {
-    if (!file) return;
-
-    if (file.type !== 'application/pdf') {
-        Toast.error('Per favore, seleziona un file PDF valido');
-        return;
-    }
-    
-    // Validazione dimensione file (max 10MB)
-    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-    if (file.size > maxSize) {
-        Toast.error(`Il file è troppo grande (${(file.size / 1024 / 1024).toFixed(1)}MB). Massimo 10MB.`);
-        return;
-    }
-
-    console.log(`📂 Caricamento file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
-    
-    // Mostra un messaggio di caricamento
-    elements.uploadBox.innerHTML = '<p class="upload-icon">⏳</p><h2>Caricamento in corso...</h2>';
-    
-    // Carica e renderizza il PDF
-    const success = await pdfHandler.loadPDF(file);
-    
-    if (success) {
-        // Nascondi sezione upload, mostra PDF e controlli
-        showPDFSection();
-    } else {
-        // Ripristina l'interfaccia di upload in caso di errore
-        resetUploadBox();
-    }
-}
-
 // ========== UI TRANSITIONS ==========
 function showPDFSection() {
     elements.uploadSection.style.display = 'none';
@@ -217,22 +148,6 @@ function showUploadSection() {
     elements.pdfContainer.style.display = 'none';
     elements.headerTitle.style.display = 'block';
     elements.controls.style.display = 'none';
-    resetUploadBox();
-    elements.fileInput.value = ''; // Reset input file
-}
-
-function resetUploadBox() {
-    elements.uploadBox.innerHTML = `
-        <p class="upload-icon">📄</p>
-        <h2>Carica il tuo spartito</h2>
-        <p>Clicca o trascina qui un file PDF</p>
-    `;
-    const btn = document.createElement('button');
-    btn.id = 'uploadBtn';
-    btn.className = 'btn-primary';
-    btn.textContent = 'Scegli File PDF';
-    btn.addEventListener('click', () => elements.fileInput.click());
-    elements.uploadBox.appendChild(btn);
 }
 
 // ========== AUTO-SCROLL LOGIC ==========

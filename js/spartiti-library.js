@@ -172,7 +172,6 @@ async function loadSpartitoFromLibrary(filePath) {
         }
         
         Toast.error(errorMessage, 4000);
-        resetUploadBox();
     }
 }
 
