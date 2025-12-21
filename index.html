@@ -20,6 +20,7 @@
                 <span id="speedValue">x0.5</span>
             </div>
             <button id="resetBtn" class="btn-control btn-round" title="Torna all'inizio">⟲</button>
+            <button id="toggleNotesBtn" class="btn-control btn-round" title="Mostra/Nascondi Note">📝</button>
             <button id="changeFileBtn" class="btn-control btn-round" title="Torna al menu">🔙</button>
             <button id="fullscreenBtn" class="btn-control btn-round" title="Schermo intero">⛶</button>
         </div>
@@ -40,7 +41,15 @@
 
         <!-- Contenitore per visualizzare il PDF (inizialmente nascosto) -->
         <div id="pdfContainer" class="pdf-container" style="display: none;">
-            <canvas id="pdfCanvas"></canvas>
+            <!-- Pannello NOTE (fisso a sinistra) -->
+            <div id="notesPanel" class="notes-panel">
+                <canvas id="notesCanvas"></canvas>
+            </div>
+            
+            <!-- Pannello SPARTITO (scrollabile a destra) -->
+            <div id="sheetPanel" class="sheet-panel">
+                <canvas id="pdfCanvas"></canvas>
+            </div>
         </div>
     </main>
 

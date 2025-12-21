@@ -9,43 +9,106 @@ class PDFHandler {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 
             'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         
-        // Variabili di stato
-        this.pdfDoc = null;        // Documento PDF caricato
-        this.currentPage = 1;       // Pagina corrente
-        this.totalPages = 0;        // Numero totale di pagine
-        this.scale = 2.0;          // Scala di rendering (2.0 = alta qualità)
+        // Variabili di stato per PDF spartito principale
+        this.pdfDoc = null;
+        this.currentPage = 1;
+        this.totalPages = 0;
+        this.scale = 2.0;
         this.canvas = document.getElementById('pdfCanvas');
         this.context = this.canvas.getContext('2d');
+        
+        // Variabili per PDF note
+        this.notesPdfDoc = null;
+        this.notesTotalPages = 0;
+        this.notesCanvas = document.getElementById('notesCanvas');
+        this.notesContext = this.notesCanvas.getContext('2d');
     }
 
     /**
-     * Carica un file PDF
-     * @param {File} file - File PDF da caricare
-     * @returns {Promise} - Promise che si risolve quando il PDF è caricato
+     * Carica DUE file PDF contemporaneamente (note + spartito)
      */
-    async loadPDF(file) {
+    async loadDualPDF(notesFilePath, sheetFilePath) {
         try {
-            // Legge il file come ArrayBuffer (dati binari)
-            const arrayBuffer = await file.arrayBuffer();
+            console.log('📂 Caricamento doppio PDF...');
             
-            // PDF.js carica e interpreta il PDF
-            const loadingTask = pdfjsLib.getDocument({data: arrayBuffer});
-            this.pdfDoc = await loadingTask.promise;
+            // Carica PDF note
+            const notesResponse = await fetch(notesFilePath);
+            if (!notesResponse.ok) {
+                throw new Error(`File note non trovato: ${notesFilePath}`);
+            }
+            const notesArrayBuffer = await notesResponse.arrayBuffer();
+            const notesLoadingTask = pdfjsLib.getDocument({data: notesArrayBuffer});
+            this.notesPdfDoc = await notesLoadingTask.promise;
+            this.notesTotalPages = this.notesPdfDoc.numPages;
+            console.log(`✅ PDF Note caricato: ${this.notesTotalPages} pagine`);
             
-            // Salva il numero totale di pagine
+            // Carica PDF spartito
+            const sheetResponse = await fetch(sheetFilePath);
+            if (!sheetResponse.ok) {
+                throw new Error(`File spartito non trovato: ${sheetFilePath}`);
+            }
+            const sheetArrayBuffer = await sheetResponse.arrayBuffer();
+            const sheetLoadingTask = pdfjsLib.getDocument({data: sheetArrayBuffer});
+            this.pdfDoc = await sheetLoadingTask.promise;
             this.totalPages = this.pdfDoc.numPages;
+            console.log(`✅ PDF Spartito caricato: ${this.totalPages} pagine`);
             
-            console.log(`✅ PDF caricato: ${this.totalPages} pagine`);
-            
-            // Renderizza la prima pagina
+            // Renderizza entrambi
+            await this.renderNotes();
             await this.renderAllPages();
             
             return true;
         } catch (error) {
             console.error('❌ Errore nel caricamento PDF:', error);
-            Toast.error('Errore nel caricamento del PDF. Assicurati che sia un file valido.');
+            Toast.error('Errore nel caricamento. Assicurati che i file esistano.');
             return false;
         }
+    }
+    
+    /**
+     * Renderizza il PDF delle note (FISSO, non scrolla)
+     */
+    async renderNotes() {
+        if (!this.notesPdfDoc) return;
+        
+        console.log('🎨 Rendering note...');
+        
+        // Array per i canvas delle pagine note
+        const pageCanvases = [];
+        let totalHeight = 0;
+        let maxWidth = 0;
+        
+        // Renderizza tutte le pagine delle note
+        for (let pageNum = 1; pageNum <= this.notesTotalPages; pageNum++) {
+            const page = await this.notesPdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({scale: this.scale});
+            
+            const tempCanvas = document.createElement('canvas');
+            const tempContext = tempCanvas.getContext('2d');
+            tempCanvas.width = viewport.width;
+            tempCanvas.height = viewport.height;
+            
+            await page.render({
+                canvasContext: tempContext,
+                viewport: viewport
+            }).promise;
+            
+            pageCanvases.push(tempCanvas);
+            totalHeight += viewport.height;
+            maxWidth = Math.max(maxWidth, viewport.width);
+        }
+        
+        // Combina in un unico canvas
+        this.notesCanvas.width = maxWidth;
+        this.notesCanvas.height = totalHeight;
+        
+        let currentY = 0;
+        for (const pageCanvas of pageCanvases) {
+            this.notesContext.drawImage(pageCanvas, 0, currentY);
+            currentY += pageCanvas.height;
+        }
+        
+        console.log('✅ Note renderizzate!');
     }
 
     /**

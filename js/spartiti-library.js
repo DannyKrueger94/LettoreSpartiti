@@ -7,15 +7,31 @@ const spartitiCategories = {
     "Natale 🎄": {
         icon: "🎄",
         spartiti: [
-            { title: "All I Want For Christmas Is You", file: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey.pdf"},
-            { title: "Jingle Bells", file: "spartiti/Natale/Jingle Bells.pdf"}
+            { 
+                title: "All I Want For Christmas Is You", 
+                notesFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey - Notes.pdf",
+                sheetFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey.pdf"
+            },
+            { 
+                title: "Jingle Bells", 
+                notesFile: "spartiti/Natale/Jingle Bells - Notes.pdf",
+                sheetFile: "spartiti/Natale/Jingle Bells.pdf"
+            }
         ]
     },
     "Classici 🎸": {
         icon: "🎸",
         spartiti: [
-            { title: "Stand By Me - Ben E. King", file: "spartiti/Classici/Stand By Me - Ben E. King.pdf"},
-            { title: "LadyGaga Shallow", file: "spartiti/Classici/LadyGaga Shallow.pdf"}
+            { 
+                title: "Stand By Me - Ben E. King", 
+                notesFile: "spartiti/Classici/Stand By Me - Ben E. King - Notes.pdf",
+                sheetFile: "spartiti/Classici/Stand By Me - Ben E. King.pdf"
+            },
+            { 
+                title: "LadyGaga Shallow", 
+                notesFile: "spartiti/Classici/LadyGaga Shallow - Notes.pdf",
+                sheetFile: "spartiti/Classici/LadyGaga Shallow.pdf"
+            }
         ]
     }
 };
@@ -119,11 +135,11 @@ function showCategoryContent(categoryName) {
         card.className = 'spartito-card';
         card.innerHTML = `
             <div class="spartito-title">${spartito.title}</div>
-            <button class="btn-load" data-file="${spartito.file}">Carica</button>
+            <button class="btn-load">Carica</button>
         `;
         
         card.querySelector('.btn-load').addEventListener('click', () => {
-            loadSpartitoFromLibrary(spartito.file);
+            loadSpartitoFromLibrary(spartito);
         });
         
         libraryContainer.appendChild(card);
@@ -131,25 +147,15 @@ function showCategoryContent(categoryName) {
 }
 
 // Funzione per caricare uno spartito dalla libreria
-async function loadSpartitoFromLibrary(filePath) {
+async function loadSpartitoFromLibrary(spartito) {
     try {
-        console.log(`📂 Caricamento spartito: ${filePath}`);
+        console.log(`📂 Caricamento spartito: ${spartito.title}`);
         
         // Mostra toast di loading
         Toast.info('Caricamento spartito in corso...', 2000);
         
-        // Fetch del file PDF
-        const response = await fetch(filePath);
-        if (!response.ok) {
-            throw new Error(`File non trovato: ${filePath}`);
-        }
-        
-        // Converti in blob e poi in file
-        const blob = await response.blob();
-        const file = new File([blob], filePath.split('/').pop(), { type: 'application/pdf' });
-        
-        // Carica il PDF
-        const success = await pdfHandler.loadPDF(file);
+        // Carica entrambi i PDF
+        const success = await pdfHandler.loadDualPDF(spartito.notesFile, spartito.sheetFile);
         
         if (success) {
             showPDFSection();
@@ -164,9 +170,9 @@ async function loadSpartitoFromLibrary(filePath) {
         let errorMessage = 'Errore nel caricamento dello spartito.';
         
         if (error.message.includes('404') || error.message.includes('File non trovato')) {
-            errorMessage = 'Spartito non trovato. Verifica che il file esista nella cartella spartiti/';
+            errorMessage = 'Spartito non trovato. Verifica che i file esistano nella cartella spartiti/';
         } else if (error.message.includes('403')) {
-            errorMessage = 'Accesso negato al file. Controlla i permessi.';
+            errorMessage = 'Accesso negato ai file. Controlla i permessi.';
         } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
             errorMessage = 'Errore di rete. Verifica la connessione internet.';
         }

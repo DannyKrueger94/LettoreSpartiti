@@ -63,14 +63,17 @@ const elements = {
     speedSlider: document.getElementById('speedSlider'),
     speedValue: document.getElementById('speedValue'),
     resetBtn: document.getElementById('resetBtn'),
+    toggleNotesBtn: document.getElementById('toggleNotesBtn'),
     changeFileBtn: document.getElementById('changeFileBtn'),
-    fullscreenBtn: document.getElementById('fullscreenBtn')
+    fullscreenBtn: document.getElementById('fullscreenBtn'),
+    notesPanel: document.getElementById('notesPanel'),
+    sheetPanel: document.getElementById('sheetPanel')
 };
 
 // ========== INIZIALIZZAZIONE ==========
 window.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 App inizializzata');
-    mainContainer = document.querySelector('main');
+    mainContainer = elements.sheetPanel; // Lo scroll ora è sul pannello spartito
     setupEventListeners();
 });
 
@@ -98,6 +101,13 @@ function setupEventListeners() {
         mainContainer.scrollTop = 0;
         stopScroll();
     });
+    
+    // Toggle pannello note
+    elements.toggleNotesBtn.addEventListener('click', () => {
+        elements.notesPanel.classList.toggle('hidden');
+        const isHidden = elements.notesPanel.classList.contains('hidden');
+        Toast.info(isHidden ? 'Note nascoste' : 'Note visibili', 1500);
+    });
 
     // Cambia file
     elements.changeFileBtn.addEventListener('click', () => {
@@ -121,10 +131,10 @@ function setupEventListeners() {
     });
 
     // Scroll manuale: se arrivi alla fine, ferma lo scroll
-    mainContainer.addEventListener('scroll', () => {
+    elements.sheetPanel.addEventListener('scroll', () => {
         if (isScrolling) {
-            const atBottom = mainContainer.scrollTop + mainContainer.clientHeight >= 
-                            mainContainer.scrollHeight - 10;
+            const atBottom = elements.sheetPanel.scrollTop + elements.sheetPanel.clientHeight >= 
+                            elements.sheetPanel.scrollHeight - 10;
             
             if (atBottom) {
                 stopScroll();
