@@ -23,14 +23,19 @@ const spartitiCategories = {
         icon: "🎸",
         spartiti: [
             { 
-                title: "Stand By Me - Ben E. King", 
+                title: "Stand By Me - Ben E. King",
                 notesFile: "spartiti/Classici/Stand By Me - Ben E. King - Notes.pdf",
                 sheetFile: "spartiti/Classici/Stand By Me - Ben E. King.pdf"
             },
             { 
-                title: "LadyGaga Shallow", 
-                notesFile: "spartiti/Classici/LadyGaga Shallow - Notes.pdf",
-                sheetFile: "spartiti/Classici/LadyGaga Shallow.pdf"
+                title: "Shallow - LadyGaga",
+                notesFile: "spartiti/Classici/Shallow - LadyGaga - Notes.pdf",
+                sheetFile: "spartiti/Classici/Shallow - LadyGaga.pdf"
+            },
+                        { 
+                title: "Lonely Day - System of a Down",
+                notesFile: "spartiti/Classici/Lonely Day - System of a Down - Notes.pdf",
+                sheetFile: "spartiti/Classici/Lonely Day - System of a Down.pdf"
             }
         ]
     }
