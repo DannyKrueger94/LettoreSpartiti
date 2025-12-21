@@ -32,7 +32,7 @@ const spartitiCategories = {
                 notesFile: "spartiti/Classici/Shallow - LadyGaga - Notes.pdf",
                 sheetFile: "spartiti/Classici/Shallow - LadyGaga.pdf"
             },
-                        { 
+            { 
                 title: "Lonely Day - System of a Down",
                 notesFile: "spartiti/Classici/Lonely Day - System of a Down - Notes.pdf",
                 sheetFile: "spartiti/Classici/Lonely Day - System of a Down.pdf"
