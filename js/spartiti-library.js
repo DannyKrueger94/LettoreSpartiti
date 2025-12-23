@@ -1,8 +1,19 @@
 /* ========================================
    SPARTITI-LIBRARY.JS - Libreria spartiti organizzati per categoria
+   Struttura:
+    "Nome Cartella 😉": {
+        icon: "😉",
+        spartiti: [
+            {
+                title: "Titolo della canzone", 
+                notesFile: "path/path2/Titolo canzone - Notes.pdf", // Inserisci qui le note della canzone che appariranno a lato
+                sheetFile: "path/path2/Titolo canzone.pdf", // Inserisci qui il testo, ci sarà lo scorrimento
+                videoUrl: "https://www.youtube.com/watch?v=EXAMPLE1" // Inserisci qui il link al tutorial
+            }
+        ]
+    },
    ======================================== */
 
-// Organizzazione spartiti per categorie
 const spartitiCategories = {
     "Natale 🎄": {
         icon: "🎄",
@@ -10,12 +21,14 @@ const spartitiCategories = {
             { 
                 title: "All I Want For Christmas Is You", 
                 notesFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey - Notes.pdf",
-                sheetFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey.pdf"
+                sheetFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=2PZGR5vRDFE"
             },
             { 
                 title: "Jingle Bells", 
                 notesFile: "spartiti/Natale/Jingle Bells - Notes.pdf",
-                sheetFile: "spartiti/Natale/Jingle Bells.pdf"
+                sheetFile: "spartiti/Natale/Jingle Bells.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=LrVe8FmY3-o"
             }
         ]
     },
@@ -25,17 +38,20 @@ const spartitiCategories = {
             { 
                 title: "Stand By Me - Ben E. King",
                 notesFile: "spartiti/Classici/Stand By Me - Ben E. King - Notes.pdf",
-                sheetFile: "spartiti/Classici/Stand By Me - Ben E. King.pdf"
+                sheetFile: "spartiti/Classici/Stand By Me - Ben E. King.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=EXAMPLE3"
             },
             { 
                 title: "Shallow - LadyGaga",
                 notesFile: "spartiti/Classici/Shallow - LadyGaga - Notes.pdf",
-                sheetFile: "spartiti/Classici/Shallow - LadyGaga.pdf"
+                sheetFile: "spartiti/Classici/Shallow - LadyGaga.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=EXAMPLE4"
             },
             { 
                 title: "Lonely Day - System of a Down",
                 notesFile: "spartiti/Classici/Lonely Day - System of a Down - Notes.pdf",
-                sheetFile: "spartiti/Classici/Lonely Day - System of a Down.pdf"
+                sheetFile: "spartiti/Classici/Lonely Day - System of a Down.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=szOVjZQuUuo&t=63s"
             }
         ]
     }
@@ -155,6 +171,19 @@ function showCategoryContent(categoryName) {
 async function loadSpartitoFromLibrary(spartito) {
     try {
         console.log(`📂 Caricamento spartito: ${spartito.title}`);
+        
+        // Salva il link video nello spartito corrente
+        window.currentSpartitoVideo = spartito.videoUrl || null;
+        
+        // Mostra/nascondi pulsante video in base alla disponibilità
+        const videoBtn = document.getElementById('videoBtn');
+        if (videoBtn) {
+            if (window.currentSpartitoVideo) {
+                videoBtn.style.display = 'flex';
+            } else {
+                videoBtn.style.display = 'none';
+            }
+        }
         
         // Mostra toast di loading
         Toast.info('Caricamento spartito in corso...', 2000);

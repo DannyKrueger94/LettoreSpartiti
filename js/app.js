@@ -64,6 +64,7 @@ const elements = {
     speedValue: document.getElementById('speedValue'),
     resetBtn: document.getElementById('resetBtn'),
     toggleNotesBtn: document.getElementById('toggleNotesBtn'),
+    videoBtn: document.getElementById('videoBtn'),
     changeFileBtn: document.getElementById('changeFileBtn'),
     fullscreenBtn: document.getElementById('fullscreenBtn'),
     notesPanel: document.getElementById('notesPanel'),
@@ -107,6 +108,16 @@ function setupEventListeners() {
         elements.notesPanel.classList.toggle('hidden');
         const isHidden = elements.notesPanel.classList.contains('hidden');
         Toast.info(isHidden ? 'Note nascoste' : 'Note visibili', 1500);
+    });
+
+    // Pulsante video tutorial
+    elements.videoBtn.addEventListener('click', () => {
+        if (window.currentSpartitoVideo) {
+            window.open(window.currentSpartitoVideo, '_blank');
+            Toast.success('Video tutorial aperto!', 2000);
+        } else {
+            Toast.warning('Nessun video disponibile per questo spartito', 2000);
+        }
     });
 
     // Cambia file
@@ -174,7 +185,8 @@ function startScroll() {
     }
     
     isScrolling = true;
-    elements.playIcon.textContent = '⏸️'; // Cambia icona in pausa
+    // Cambia icona in pausa
+    elements.playIcon.innerHTML = '<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>';
     scrollAccumulator = 0; // Reset accumulatore
     
     console.log(`▶️ Scroll avviato (velocità: x${scrollSpeed.toFixed(1)})`);
@@ -222,7 +234,8 @@ function startScroll() {
  */
 function stopScroll() {
     isScrolling = false;
-    elements.playIcon.textContent = '▶️'; // Cambia icona in play
+    // Cambia icona in play
+    elements.playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
     scrollAccumulator = 0; // Reset accumulatore
     
     if (scrollInterval) {
