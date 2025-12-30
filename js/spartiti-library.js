@@ -39,19 +39,60 @@ const spartitiCategories = {
                 title: "Stand By Me - Ben E. King",
                 notesFile: "spartiti/Classici/Stand By Me - Ben E. King - Notes.pdf",
                 sheetFile: "spartiti/Classici/Stand By Me - Ben E. King.pdf",
-                videoUrl: "https://www.youtube.com/watch?v=EXAMPLE3"
+                videoUrl: "https://www.youtube.com/watch?v=6Nwfdn2kSfs"
             },
             { 
                 title: "Shallow - LadyGaga",
                 notesFile: "spartiti/Classici/Shallow - LadyGaga - Notes.pdf",
                 sheetFile: "spartiti/Classici/Shallow - LadyGaga.pdf",
-                videoUrl: "https://www.youtube.com/watch?v=EXAMPLE4"
+                videoUrl: "https://www.youtube.com/watch?v=Z3LzCJlSEfQ"
             },
             { 
                 title: "Lonely Day - System of a Down",
                 notesFile: "spartiti/Classici/Lonely Day - System of a Down - Notes.pdf",
                 sheetFile: "spartiti/Classici/Lonely Day - System of a Down.pdf",
-                videoUrl: "https://www.youtube.com/watch?v=szOVjZQuUuo&t=63s"
+                videoUrl: "https://www.youtube.com/watch?v=szOVjZQuUuo&t"
+            }
+        ]
+    },
+    "Corso Arpeggio 🎸": {
+        icon: "🎸",
+        spartiti: [
+            {
+                title: "Faded - Alan Walker",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Faded.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Feel Good Inc - Gorillaz",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Feel Good Inc.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "River Travel",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/River Travel.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Seven Nation Army",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Seven Nation Army.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Smoke on the Water",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Smoke on the Water.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Sweet Dreams",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Sweet Dreams.pdf",
+                videoUrl: ""
             }
         ]
     }

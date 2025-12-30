@@ -26,23 +26,36 @@ class PDFHandler {
 
     /**
      * Carica DUE file PDF contemporaneamente (note + spartito)
+     * notesFilePath è opzionale - se vuoto (""), carica solo lo spartito
      */
     async loadDualPDF(notesFilePath, sheetFilePath) {
         try {
-            console.log('📂 Caricamento doppio PDF...');
+            console.log('📂 Caricamento PDF...');
             
-            // Carica PDF note
-            const notesResponse = await fetch(notesFilePath);
-            if (!notesResponse.ok) {
-                throw new Error(`File note non trovato: ${notesFilePath}`);
+            // Carica PDF note (OPZIONALE)
+            if (notesFilePath && notesFilePath.trim() !== "") {
+                try {
+                    const notesResponse = await fetch(notesFilePath);
+                    if (!notesResponse.ok) {
+                        console.warn(`⚠️ File note non trovato: ${notesFilePath}`);
+                        this.notesPdfDoc = null;
+                    } else {
+                        const notesArrayBuffer = await notesResponse.arrayBuffer();
+                        const notesLoadingTask = pdfjsLib.getDocument({data: notesArrayBuffer});
+                        this.notesPdfDoc = await notesLoadingTask.promise;
+                        this.notesTotalPages = this.notesPdfDoc.numPages;
+                        console.log(`✅ PDF Note caricato: ${this.notesTotalPages} pagine`);
+                    }
+                } catch (notesError) {
+                    console.warn('⚠️ Impossibile caricare le note:', notesError);
+                    this.notesPdfDoc = null;
+                }
+            } else {
+                console.log('ℹ️ Nessun file note specificato');
+                this.notesPdfDoc = null;
             }
-            const notesArrayBuffer = await notesResponse.arrayBuffer();
-            const notesLoadingTask = pdfjsLib.getDocument({data: notesArrayBuffer});
-            this.notesPdfDoc = await notesLoadingTask.promise;
-            this.notesTotalPages = this.notesPdfDoc.numPages;
-            console.log(`✅ PDF Note caricato: ${this.notesTotalPages} pagine`);
             
-            // Carica PDF spartito
+            // Carica PDF spartito (OBBLIGATORIO)
             const sheetResponse = await fetch(sheetFilePath);
             if (!sheetResponse.ok) {
                 throw new Error(`File spartito non trovato: ${sheetFilePath}`);
@@ -53,7 +66,7 @@ class PDFHandler {
             this.totalPages = this.pdfDoc.numPages;
             console.log(`✅ PDF Spartito caricato: ${this.totalPages} pagine`);
             
-            // Renderizza entrambi
+            // Renderizza entrambi (renderNotes gestisce già il caso null)
             await this.renderNotes();
             await this.renderAllPages();
             
