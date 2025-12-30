@@ -216,6 +216,9 @@ async function loadSpartitoFromLibrary(spartito) {
         // Salva il link video nello spartito corrente
         window.currentSpartitoVideo = spartito.videoUrl || null;
         
+        // Salva se ci sono note disponibili
+        window.hasNotesFile = spartito.notesFile && spartito.notesFile.trim() !== "";
+        
         // Mostra/nascondi pulsante video in base alla disponibilità
         const videoBtn = document.getElementById('videoBtn');
         if (videoBtn) {
@@ -223,6 +226,19 @@ async function loadSpartitoFromLibrary(spartito) {
                 videoBtn.style.display = 'flex';
             } else {
                 videoBtn.style.display = 'none';
+            }
+        }
+        
+        // Mostra/nascondi pulsante toggle note e pannello note
+        const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+        const notesPanel = document.getElementById('notesPanel');
+        if (toggleNotesBtn && notesPanel) {
+            if (window.hasNotesFile) {
+                toggleNotesBtn.style.display = 'flex';
+                notesPanel.classList.remove('hidden');
+            } else {
+                toggleNotesBtn.style.display = 'none';
+                notesPanel.classList.add('hidden');
             }
         }
         
