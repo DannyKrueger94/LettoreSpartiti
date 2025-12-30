@@ -55,7 +55,7 @@ const spartitiCategories = {
             }
         ]
     },
-    "Corso Arpeggio 🎸": {
+    "Corso Arpeggio 🎼": {
         icon: "🎸",
         spartiti: [
             {
