@@ -93,6 +93,18 @@ const spartitiCategories = {
                 notesFile: "",
                 sheetFile: "spartiti/Corso Arpeggio/Sweet Dreams.pdf",
                 videoUrl: ""
+            },
+            {
+                title: "House of the Rising Sun",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/House of the Rising Sun.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Shape of My Heart",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Shape of My Heart.pdf",
+                videoUrl: ""
             }
         ]
     }
