@@ -1,3 +1,10 @@
+## Come aggiungere spartiti:
+
+1. Copia i file PDF nella cartella /spartiti/path
+2. Aggiungi il nome del file nella lista in `js/spartiti-library.js`
+3. Fare il push su GIT
+
+
 # 🎸 Lettore Spartiti con Auto-Scroll
 
 App web per leggere spartiti PDF mentre suoni la chitarra, con scroll automatico a velocità variabile.
@@ -156,20 +163,6 @@ Usa `requestAnimationFrame()` per animazioni fluide a 60 FPS. Ogni frame scrolla
 
 ### Perché tutte le pagine in un'unica immagine?
 Rende lo scroll continuo senza interruzioni tra le pagine - esperienza più naturale durante l'esecuzione.
-
-## 🐛 Risoluzione Problemi
-
-**Il PDF non si carica:**
-- Assicurati che sia un PDF valido
-- Alcuni PDF protetti potrebbero non funzionare
-
-**Lo scroll è troppo veloce/lento:**
-- Usa lo slider per regolare (valori bassi 1-3 per brani lenti)
-- Il fattore di calibrazione è in `app.js` (riga ~220): `scrollSpeed * 0.5`
-
-**Non funziona su tablet:**
-- Verifica che il browser supporti JavaScript
-- Prova con Chrome o Safari aggiornati
 
 ## 📜 Licenza
 
