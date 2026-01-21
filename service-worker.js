@@ -2,9 +2,9 @@
    SERVICE WORKER - Gestione cache e funzionamento offline
    ======================================== */
 
-const CACHE_NAME = 'spartiti-app-v2';
-const STATIC_CACHE = 'spartiti-static-v2';
-const DYNAMIC_CACHE = 'spartiti-dynamic-v2';
+const CACHE_NAME = 'spartiti-app-v3';
+const STATIC_CACHE = 'spartiti-static-v3';
+const DYNAMIC_CACHE = 'spartiti-dynamic-v3';
 
 // File da cachare immediatamente (shell dell'app)
 const STATIC_FILES = [
@@ -23,10 +23,10 @@ self.addEventListener('install', (event) => {
     console.log('[Service Worker] Installing...');
     
     event.waitUntil(
-        caches.open(STATIC_CACHE)
-            .then((cache) => {
+        Promise.all([
+            // Cache file statici
+            caches.open(STATIC_CACHE).then((cache) => {
                 console.log('[Service Worker] Caching static files');
-                // Cache file uno per uno per evitare che un errore blocchi tutto
                 return Promise.allSettled(
                     STATIC_FILES.map(url => 
                         cache.add(url).catch(err => {
@@ -35,14 +35,52 @@ self.addEventListener('install', (event) => {
                         })
                     )
                 );
-            })
-            .then(() => {
-                console.log('[Service Worker] Installation complete');
-                return self.skipWaiting(); // Attiva immediatamente
-            })
-            .catch((error) => {
-                console.error('[Service Worker] Installation failed:', error);
-            })
+            }),
+            // Pre-cache tutti i PDF dalla libreria
+            fetch('/js/spartiti-library.js')
+                .then(response => response.text())
+                .then(text => {
+                    // Estrai tutti i percorsi PDF dal file spartiti-library.js
+                    const pdfFiles = [];
+                    const notesRegex = /notesFile:\s*["']([^"']+\.pdf)["']/g;
+                    const sheetRegex = /sheetFile:\s*["']([^"']+\.pdf)["']/g;
+                    
+                    let match;
+                    while ((match = notesRegex.exec(text)) !== null) {
+                        if (match[1] && match[1].trim() !== "") {
+                            pdfFiles.push('/' + match[1]);
+                        }
+                    }
+                    while ((match = sheetRegex.exec(text)) !== null) {
+                        if (match[1] && match[1].trim() !== "") {
+                            pdfFiles.push('/' + match[1]);
+                        }
+                    }
+                    
+                    console.log('[Service Worker] Found', pdfFiles.length, 'PDFs to cache');
+                    
+                    // Cache tutti i PDF
+                    return caches.open(DYNAMIC_CACHE).then((cache) => {
+                        return Promise.allSettled(
+                            pdfFiles.map(pdfUrl => 
+                                cache.add(pdfUrl)
+                                    .then(() => console.log('[Service Worker] Cached:', pdfUrl))
+                                    .catch(err => console.warn('[Service Worker] Failed to cache PDF:', pdfUrl, err))
+                            )
+                        );
+                    });
+                })
+                .catch(err => {
+                    console.error('[Service Worker] Failed to load spartiti library:', err);
+                })
+        ])
+        .then(() => {
+            console.log('[Service Worker] Installation complete - All PDFs cached!');
+            return self.skipWaiting();
+        })
+        .catch((error) => {
+            console.error('[Service Worker] Installation failed:', error);
+        })
     );
 });
 
