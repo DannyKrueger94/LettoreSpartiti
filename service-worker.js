@@ -2,22 +2,19 @@
    SERVICE WORKER - Gestione cache e funzionamento offline
    ======================================== */
 
-const CACHE_NAME = 'spartiti-app-v1';
-const STATIC_CACHE = 'spartiti-static-v1';
-const DYNAMIC_CACHE = 'spartiti-dynamic-v1';
+const CACHE_NAME = 'spartiti-app-v2';
+const STATIC_CACHE = 'spartiti-static-v2';
+const DYNAMIC_CACHE = 'spartiti-dynamic-v2';
 
 // File da cachare immediatamente (shell dell'app)
 const STATIC_FILES = [
-    './',
-    './index.html',
-    './css/style.css',
-    './js/app.js',
-    './js/pdfHandler.js',
-    './js/spartiti-library.js',
-    './manifest.json',
-    // CDN PDF.js
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+    '/',
+    '/index.html',
+    '/css/style.css',
+    '/js/app.js',
+    '/js/pdfHandler.js',
+    '/js/spartiti-library.js',
+    '/manifest.json'
 ];
 
 // ========== INSTALLAZIONE ==========
@@ -29,7 +26,15 @@ self.addEventListener('install', (event) => {
         caches.open(STATIC_CACHE)
             .then((cache) => {
                 console.log('[Service Worker] Caching static files');
-                return cache.addAll(STATIC_FILES);
+                // Cache file uno per uno per evitare che un errore blocchi tutto
+                return Promise.allSettled(
+                    STATIC_FILES.map(url => 
+                        cache.add(url).catch(err => {
+                            console.warn('[Service Worker] Failed to cache:', url, err);
+                            return null;
+                        })
+                    )
+                );
             })
             .then(() => {
                 console.log('[Service Worker] Installation complete');
