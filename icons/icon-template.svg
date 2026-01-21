@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background gradiente -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="noteGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e94560;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c23b52;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sfondo con angoli arrotondati -->
+  <rect width="512" height="512" rx="115" fill="url(#bgGradient)"/>
+  
+  <!-- Pentagramma stilizzato (5 linee) -->
+  <g stroke="#ffffff" stroke-width="8" opacity="0.3">
+    <line x1="100" y1="200" x2="412" y2="200"/>
+    <line x1="100" y1="240" x2="412" y2="240"/>
+    <line x1="100" y1="280" x2="412" y2="280"/>
+    <line x1="100" y1="320" x2="412" y2="320"/>
+    <line x1="100" y1="360" x2="412" y2="360"/>
+  </g>
+  
+  <!-- Chiave di violino stilizzata -->
+  <path d="M 200 180 Q 220 140 250 140 Q 280 140 280 180 Q 280 220 250 240 L 240 380 Q 240 400 220 400 Q 200 400 200 380 L 200 240 Q 170 220 170 180 Q 170 140 200 140" 
+        fill="url(#noteGradient)" 
+        stroke="#ffffff" 
+        stroke-width="3"/>
+  
+  <!-- Note musicali -->
+  <g fill="url(#noteGradient)" stroke="#ffffff" stroke-width="2">
+    <!-- Nota 1 -->
+    <ellipse cx="310" cy="280" rx="18" ry="14" transform="rotate(-20 310 280)"/>
+    <rect x="325" y="220" width="6" height="60" rx="3"/>
+    
+    <!-- Nota 2 -->
+    <ellipse cx="360" cy="310" rx="18" ry="14" transform="rotate(-20 360 310)"/>
+    <rect x="375" y="250" width="6" height="60" rx="3"/>
+    
+    <!-- Barra che collega le note -->
+    <rect x="325" y="220" width="56" height="8" rx="4"/>
+  </g>
+  
+  <!-- Simbolo scroll (frecce) -->
+  <g fill="#e94560" opacity="0.8">
+    <path d="M 140 420 L 150 405 L 160 420 Z"/>
+    <path d="M 140 450 L 150 435 L 160 450 Z"/>
+  </g>
+</svg>

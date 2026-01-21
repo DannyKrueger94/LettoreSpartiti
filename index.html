@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lettore Spartiti - Auto Scroll</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Meta tags per PWA -->
+    <meta name="description" content="App per leggere spartiti PDF mentre suoni la chitarra, con auto-scroll a velocità variabile">
+    <meta name="theme-color" content="#16213e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SpartitiApp">
+    
+    <!-- Icone Apple -->
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512x512.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-192x192.png">
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -85,5 +104,74 @@
     <script src="js/pdfHandler.js"></script>
     <script src="js/spartiti-library.js"></script>
     <script src="js/app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        // Registra il Service Worker per funzionamento offline
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then((registration) => {
+                        console.log('✅ Service Worker registrato con successo:', registration.scope);
+                        
+                        // Controlla aggiornamenti ogni 60 secondi
+                        setInterval(() => {
+                            registration.update();
+                        }, 60000);
+                        
+                        // Notifica quando c'è un nuovo Service Worker in attesa
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nuovo Service Worker disponibile
+                                    if (confirm('Nuova versione disponibile! Vuoi aggiornare?')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('❌ Registrazione Service Worker fallita:', error);
+                    });
+            });
+        }
+        
+        // Gestione prompt "Aggiungi alla schermata Home"
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Previeni il prompt automatico
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            console.log('💡 App può essere installata!');
+            
+            // Mostra un pulsante personalizzato per installare (opzionale)
+            // Puoi aggiungere un bottone nell'UI in futuro
+            
+            // Per ora, mostra automaticamente dopo 3 secondi
+            setTimeout(() => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('✅ Utente ha accettato l\'installazione');
+                        } else {
+                            console.log('❌ Utente ha rifiutato l\'installazione');
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            }, 3000);
+        });
+        
+        // Gestione installazione completata
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ PWA installata con successo!');
+            deferredPrompt = null;
+        });
+    </script>
 </body>
 </html>

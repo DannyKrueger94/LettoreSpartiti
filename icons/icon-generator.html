@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore Icone PWA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        h1 { color: #e94560; }
+        .instructions {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover { background: #c23b52; }
+        canvas {
+            display: none;
+        }
+        .preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .preview-item {
+            text-align: center;
+        }
+        .preview-item img {
+            border: 2px solid #e94560;
+            border-radius: 10px;
+        }
+        #uploadArea {
+            border: 3px dashed #e94560;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        #uploadArea:hover {
+            background: rgba(233, 69, 96, 0.1);
+        }
+        #uploadArea.dragover {
+            background: rgba(233, 69, 96, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎼 Generatore Icone PWA - Lettore Spartiti</h1>
+    
+    <div class="instructions">
+        <h2>📝 Istruzioni:</h2>
+        <ol>
+            <li><strong>Carica un'immagine</strong> (formato quadrato, minimo 512x512 pixel)</li>
+            <li>Clicca su "Genera Tutte le Icone"</li>
+            <li>Scarica ogni icona cliccando sui pulsanti</li>
+            <li>Salva i file nella cartella <code>/icons/</code> del progetto</li>
+        </ol>
+        <p><strong>Formati supportati:</strong> PNG, JPG, SVG</p>
+        <p><strong>Dimensioni generate:</strong> 72x72, 96x96, 128x128, 144x144, 152x152, 192x192, 384x384, 512x512</p>
+    </div>
+
+    <div id="uploadArea">
+        <h3>📁 Trascina qui la tua immagine<br>oppure<br>clicca per selezionare</h3>
+        <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <button id="generateBtn" disabled>Genera Tutte le Icone</button>
+        <button id="useDefaultBtn">Usa Template SVG Default</button>
+    </div>
+
+    <div id="preview" class="preview"></div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        let sourceImage = null;
+
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const useDefaultBtn = document.getElementById('useDefaultBtn');
+        const preview = document.getElementById('preview');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Click to upload
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Drag & Drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadImage(file);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) loadImage(file);
+        });
+
+        // Load image
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    sourceImage = img;
+                    generateBtn.disabled = false;
+                    uploadArea.innerHTML = '<h3>✅ Immagine caricata!</h3>';
+                    generateIcons();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Use default SVG template
+        useDefaultBtn.addEventListener('click', () => {
+            generateDefaultIcon();
+        });
+
+        // Generate default icon
+        function generateDefaultIcon() {
+            canvas.width = 512;
+            canvas.height = 512;
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+            gradient.addColorStop(0, '#16213e');
+            gradient.addColorStop(1, '#0f3460');
+            
+            // Rounded rectangle background
+            ctx.fillStyle = gradient;
+            roundRect(ctx, 0, 0, 512, 512, 115);
+            ctx.fill();
+
+            // Staff lines (pentagramma)
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 8;
+            for (let i = 0; i < 5; i++) {
+                const y = 200 + i * 40;
+                ctx.beginPath();
+                ctx.moveTo(100, y);
+                ctx.lineTo(412, y);
+                ctx.stroke();
+            }
+
+            // Treble clef (simplified)
+            ctx.fillStyle = '#e94560';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(230, 180, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            
+            ctx.fillRect(220, 180, 10, 200);
+            ctx.beginPath();
+            ctx.arc(225, 380, 15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Musical notes
+            ctx.fillStyle = '#e94560';
+            
+            // Note 1
+            ctx.beginPath();
+            ctx.ellipse(310, 280, 18, 14, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(325, 220, 6, 60);
+            
+            // Note 2
+            ctx.beginPath();
+            ctx.ellipse(360, 310, 18, 14, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(375, 250, 6, 60);
+            
+            // Beam
+            ctx.fillRect(325, 220, 56, 8);
+
+            // Scroll arrows
+            ctx.fillStyle = 'rgba(233, 69, 96, 0.8)';
+            drawTriangle(140, 420, 10);
+            drawTriangle(140, 450, 10);
+
+            canvas.toBlob((blob) => {
+                const img = new Image();
+                img.onload = () => {
+                    sourceImage = img;
+                    generateBtn.disabled = false;
+                    uploadArea.innerHTML = '<h3>✅ Template default caricato!</h3>';
+                    generateIcons();
+                };
+                img.src = URL.createObjectURL(blob);
+            });
+        }
+
+        // Helper: rounded rectangle
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        // Helper: draw triangle
+        function drawTriangle(x, y, size) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + size, y - 15);
+            ctx.lineTo(x + size * 2, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Generate button
+        generateBtn.addEventListener('click', generateIcons);
+
+        // Generate all icon sizes
+        function generateIcons() {
+            if (!sourceImage) return;
+            
+            preview.innerHTML = '<h2>📦 Icone Generate:</h2>';
+            
+            sizes.forEach(size => {
+                canvas.width = size;
+                canvas.height = size;
+                
+                ctx.clearRect(0, 0, size, size);
+                ctx.drawImage(sourceImage, 0, 0, size, size);
+                
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const fileName = `icon-${size}x${size}.png`;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'preview-item';
+                    item.innerHTML = `
+                        <img src="${url}" width="${Math.min(size, 128)}" height="${Math.min(size, 128)}">
+                        <p>${size}x${size}</p>
+                        <button onclick="downloadIcon('${url}', '${fileName}')">⬇️ Scarica</button>
+                    `;
+                    preview.appendChild(item);
+                });
+            });
+        }
+
+        // Download icon
+        window.downloadIcon = function(url, filename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+        };
+
+        // Auto-load default on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (!sourceImage) {
+                    generateDefaultIcon();
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
