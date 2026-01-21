@@ -213,7 +213,7 @@ function showCategoryContent(categoryName) {
         `;
         
         card.querySelector('.btn-load').addEventListener('click', () => {
-            loadSpartitoFromLibrary(spartito);
+            loadSpartitoFromLibrary(spartito, categoryName);
         });
         
         libraryContainer.appendChild(card);
@@ -221,7 +221,7 @@ function showCategoryContent(categoryName) {
 }
 
 // Funzione per caricare uno spartito dalla libreria
-async function loadSpartitoFromLibrary(spartito) {
+async function loadSpartitoFromLibrary(spartito, categoryName) {
     try {
         console.log(`📂 Caricamento spartito: ${spartito.title}`);
         
@@ -254,15 +254,62 @@ async function loadSpartitoFromLibrary(spartito) {
             }
         }
         
+        // Genera ID univoco per lo spartito
+        const spartitoId = `${categoryName}_${spartito.title}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+        
         // Mostra toast di loading
         Toast.info('Caricamento spartito in corso...', 2000);
         
-        // Carica entrambi i PDF
-        const success = await pdfHandler.loadDualPDF(spartito.notesFile, spartito.sheetFile);
+        let success = false;
+        
+        // STRATEGIA 1: Prova a caricare da IndexedDB (se DBManager è inizializzato)
+        if (dbManager) {
+            const cachedData = await dbManager.getSpartito(spartitoId);
+            if (cachedData) {
+                console.log('💾 Caricamento da IndexedDB');
+                success = await pdfHandler.loadFromDB(spartitoId);
+                if (success) {
+                    Toast.success('Spartito caricato (offline)!', 2000);
+                }
+            }
+        }
+        
+        // STRATEGIA 2: Se non è in cache, scarica da rete e salva in IndexedDB
+        if (!success) {
+            console.log('🌐 Caricamento da rete');
+            
+            // Carica da rete usando il metodo legacy (fallback)
+            success = await pdfHandler.loadDualPDF(spartito.notesFile, spartito.sheetFile);
+            
+            if (success && dbManager) {
+                // Salva in IndexedDB per uso futuro
+                try {
+                    await dbManager.downloadAndSaveSpartito(
+                        spartitoId,
+                        categoryName,
+                        spartito.title,
+                        spartito.notesFile,
+                        spartito.sheetFile,
+                        spartito.videoUrl
+                    );
+                    console.log('💾 Spartito salvato in IndexedDB per uso offline');
+                    
+                    // Aggiorna badge
+                    const stats = await dbManager.getStats();
+                    updateSyncBadge(stats.count);
+                } catch (saveError) {
+                    console.warn('⚠️ Errore salvataggio in IndexedDB:', saveError);
+                    // Non bloccare l'utente se il salvataggio fallisce
+                }
+            }
+            
+            if (success) {
+                Toast.success('Spartito caricato (online)!', 2000);
+            }
+        }
         
         if (success) {
             showPDFSection();
-            Toast.success('Spartito caricato!', 2000);
         } else {
             Toast.error('Errore nel caricamento del PDF');
         }
@@ -284,7 +331,97 @@ async function loadSpartitoFromLibrary(spartito) {
     }
 }
 
+// ========== INDEXEDDB MANAGER ==========
+let dbManager = null;
+
+// Inizializza DBManager
+async function initializeDB() {
+    try {
+        dbManager = new DBManager();
+        await dbManager.init();
+        console.log('✅ DBManager inizializzato');
+        
+        // Mostra statistiche storage
+        const stats = await dbManager.getStats();
+        console.log(`📊 Storage: ${stats.count} spartiti (${stats.totalSizeMB.toFixed(2)} MB)`);
+        
+        // Aggiorna UI badge se necessario
+        updateSyncBadge(stats.count);
+    } catch (error) {
+        console.error('❌ Errore inizializzazione DBManager:', error);
+        Toast.error('Errore inizializzazione storage offline', 3000);
+    }
+}
+
+// Aggiorna badge contatore spartiti scaricati
+function updateSyncBadge(count) {
+    const badge = document.getElementById('syncBadge');
+    if (badge) {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+}
+
+// Funzione per sincronizzare tutti gli spartiti
+async function syncAllSpartiti() {
+    if (!dbManager) {
+        Toast.error('DBManager non inizializzato', 2000);
+        return;
+    }
+    
+    const syncBtn = document.getElementById('syncBtn');
+    const syncProgress = document.getElementById('syncProgress');
+    const progressBar = document.getElementById('syncProgressBar');
+    const progressText = document.getElementById('syncProgressText');
+    
+    try {
+        // Disabilita pulsante
+        if (syncBtn) syncBtn.disabled = true;
+        if (syncProgress) syncProgress.style.display = 'block';
+        
+        Toast.info('Sincronizzazione avviata...', 2000);
+        
+        let completed = 0;
+        let total = 0;
+        
+        // Conta totale spartiti
+        for (const categoryName in spartitiCategories) {
+            total += spartitiCategories[categoryName].spartiti.length;
+        }
+        
+        // Progress callback
+        const onProgress = (current, totalCount, spartitoTitle) => {
+            completed = current;
+            const percent = Math.round((current / totalCount) * 100);
+            if (progressBar) progressBar.style.width = `${percent}%`;
+            if (progressText) progressText.textContent = `${current}/${totalCount} - ${spartitoTitle}`;
+        };
+        
+        // Sincronizza
+        const result = await dbManager.syncAllFromLibrary(spartitiCategories, onProgress);
+        
+        // Aggiorna badge
+        const stats = await dbManager.getStats();
+        updateSyncBadge(stats.count);
+        
+        Toast.success(`Sincronizzazione completata! ${result.success} scaricati, ${result.failed} errori`, 3000);
+        
+    } catch (error) {
+        console.error('❌ Errore sincronizzazione:', error);
+        Toast.error('Errore durante la sincronizzazione', 3000);
+    } finally {
+        // Riabilita pulsante
+        if (syncBtn) syncBtn.disabled = false;
+        if (syncProgress) {
+            setTimeout(() => {
+                syncProgress.style.display = 'none';
+            }, 2000);
+        }
+    }
+}
+
 // Inizializza la libreria al caricamento
 document.addEventListener('DOMContentLoaded', () => {
+    initializeDB();
     showCategories();
 });

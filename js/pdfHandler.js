@@ -25,12 +25,66 @@ class PDFHandler {
     }
 
     /**
-     * Carica DUE file PDF contemporaneamente (note + spartito)
-     * notesFilePath è opzionale - se vuoto (""), carica solo lo spartito
+     * Carica PDF da IndexedDB usando l'ID spartito
+     * @param {string} spartitoId - ID dello spartito nel database
+     */
+    async loadFromDB(spartitoId) {
+        try {
+            console.log('📂 [PDF] Caricamento da DB:', spartitoId);
+            
+            // Ottieni spartito dal database
+            const spartito = await dbManager.getSpartito(spartitoId);
+            if (!spartito) {
+                throw new Error('Spartito non trovato nel database');
+            }
+
+            // Carica PDF note (se presente)
+            if (spartito.notesBlob) {
+                try {
+                    const notesArrayBuffer = await spartito.notesBlob.arrayBuffer();
+                    const notesLoadingTask = pdfjsLib.getDocument({data: notesArrayBuffer});
+                    this.notesPdfDoc = await notesLoadingTask.promise;
+                    this.notesTotalPages = this.notesPdfDoc.numPages;
+                    console.log(`✅ [PDF] Note caricate: ${this.notesTotalPages} pagine`);
+                } catch (notesError) {
+                    console.warn('⚠️ [PDF] Errore caricamento note:', notesError);
+                    this.notesPdfDoc = null;
+                }
+            } else {
+                console.log('ℹ️ [PDF] Nessuna nota disponibile');
+                this.notesPdfDoc = null;
+            }
+            
+            // Carica PDF spartito (obbligatorio)
+            if (!spartito.sheetBlob) {
+                throw new Error('Blob spartito mancante');
+            }
+            
+            const sheetArrayBuffer = await spartito.sheetBlob.arrayBuffer();
+            const sheetLoadingTask = pdfjsLib.getDocument({data: sheetArrayBuffer});
+            this.pdfDoc = await sheetLoadingTask.promise;
+            this.totalPages = this.pdfDoc.numPages;
+            console.log(`✅ [PDF] Spartito caricato: ${this.totalPages} pagine`);
+            
+            // Renderizza entrambi
+            await this.renderNotes();
+            await this.renderAllPages();
+            
+            return true;
+        } catch (error) {
+            console.error('❌ [PDF] Errore caricamento:', error);
+            Toast.error('Errore nel caricamento dello spartito');
+            return false;
+        }
+    }
+
+    /**
+     * Carica DUE file PDF da URL (fallback se non in DB)
+     * @deprecated Usa loadFromDB invece
      */
     async loadDualPDF(notesFilePath, sheetFilePath) {
         try {
-            console.log('📂 Caricamento PDF...');
+            console.log('📂 Caricamento PDF da URL...');
             
             // Carica PDF note (OPZIONALE)
             if (notesFilePath && notesFilePath.trim() !== "") {

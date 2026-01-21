@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test IndexedDB</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 { color: #6366f1; }
+        .test-section {
+            background: #1e293b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 2px solid #334155;
+        }
+        button {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover { opacity: 0.9; }
+        .result {
+            background: #334155;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .warning { color: #fbbf24; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test IndexedDB - Lettore Spartiti</h1>
+    
+    <div class="test-section">
+        <h2>1. Inizializzazione DBManager</h2>
+        <button onclick="testInit()">Inizializza DB</button>
+        <div id="result-init" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Statistiche Storage</h2>
+        <button onclick="testStats()">Mostra Stats</button>
+        <div id="result-stats" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Lista Spartiti Salvati</h2>
+        <button onclick="testList()">Lista Spartiti</button>
+        <div id="result-list" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Verifica Connessione</h2>
+        <button onclick="testConnection()">Test Connessione</button>
+        <div id="result-connection" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Test Service Worker</h2>
+        <button onclick="testServiceWorker()">Verifica SW</button>
+        <div id="result-sw" class="result"></div>
+    </div>
+
+    <script src="js/dbManager.js"></script>
+    <script>
+        let db = null;
+        
+        async function testInit() {
+            const resultDiv = document.getElementById('result-init');
+            try {
+                resultDiv.innerHTML = '⏳ Inizializzazione...';
+                db = new DBManager();
+                await db.init();
+                resultDiv.innerHTML = '<span class="success">✅ DBManager inizializzato con successo!</span>';
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Errore: ${error.message}</span>`;
+                console.error(error);
+            }
+        }
+        
+        async function testStats() {
+            const resultDiv = document.getElementById('result-stats');
+            try {
+                if (!db) {
+                    resultDiv.innerHTML = '<span class="warning">⚠️ Devi inizializzare prima il DB</span>';
+                    return;
+                }
+                
+                resultDiv.innerHTML = '⏳ Recupero statistiche...';
+                const stats = await db.getStats();
+                resultDiv.innerHTML = `
+                    <span class="success">✅ Statistiche Storage:</span><br>
+                    📊 Spartiti salvati: <strong>${stats.count}</strong><br>
+                    💾 Spazio occupato: <strong>${stats.totalSizeMB.toFixed(2)} MB</strong>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Errore: ${error.message}</span>`;
+                console.error(error);
+            }
+        }
+        
+        async function testList() {
+            const resultDiv = document.getElementById('result-list');
+            try {
+                if (!db) {
+                    resultDiv.innerHTML = '<span class="warning">⚠️ Devi inizializzare prima il DB</span>';
+                    return;
+                }
+                
+                resultDiv.innerHTML = '⏳ Recupero lista...';
+                const spartiti = await db.getAllSpartiti();
+                
+                if (spartiti.length === 0) {
+                    resultDiv.innerHTML = '<span class="warning">⚠️ Nessuno spartito salvato</span>';
+                } else {
+                    let html = '<span class="success">✅ Spartiti trovati:</span><br>';
+                    spartiti.forEach(s => {
+                        const notesSize = s.notesBlob ? (s.notesBlob.size / 1024).toFixed(1) : '0';
+                        const sheetSize = s.sheetBlob ? (s.sheetBlob.size / 1024).toFixed(1) : '0';
+                        html += `<br>📄 <strong>${s.title}</strong> (${s.category})<br>`;
+                        html += `&nbsp;&nbsp;&nbsp;Note: ${notesSize} KB | Spartito: ${sheetSize} KB<br>`;
+                        html += `&nbsp;&nbsp;&nbsp;Salvato: ${new Date(s.savedAt).toLocaleString('it-IT')}<br>`;
+                    });
+                    resultDiv.innerHTML = html;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Errore: ${error.message}</span>`;
+                console.error(error);
+            }
+        }
+        
+        async function testConnection() {
+            const resultDiv = document.getElementById('result-connection');
+            try {
+                resultDiv.innerHTML = '⏳ Test connessione...';
+                
+                const response = await fetch('spartiti/Natale/Jingle Bells.pdf', { method: 'HEAD' });
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <span class="success">✅ Connessione OK</span><br>
+                        🌐 Status: ${response.status}<br>
+                        📦 Content-Type: ${response.headers.get('content-type')}<br>
+                        💾 Content-Length: ${(response.headers.get('content-length') / 1024).toFixed(1)} KB
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Errore HTTP ${response.status}</span>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Errore: ${error.message}</span>`;
+                console.error(error);
+            }
+        }
+        
+        async function testServiceWorker() {
+            const resultDiv = document.getElementById('result-sw');
+            try {
+                resultDiv.innerHTML = '⏳ Verifica Service Worker...';
+                
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    
+                    if (registrations.length === 0) {
+                        resultDiv.innerHTML = '<span class="warning">⚠️ Nessun Service Worker registrato</span>';
+                    } else {
+                        let html = '<span class="success">✅ Service Worker trovato:</span><br>';
+                        registrations.forEach((reg, i) => {
+                            html += `<br>SW #${i+1}:<br>`;
+                            html += `&nbsp;&nbsp;Scope: ${reg.scope}<br>`;
+                            html += `&nbsp;&nbsp;Active: ${reg.active ? '✅ Sì' : '❌ No'}<br>`;
+                            html += `&nbsp;&nbsp;Installing: ${reg.installing ? '⏳ Sì' : '✅ No'}<br>`;
+                        });
+                        resultDiv.innerHTML = html;
+                    }
+                } else {
+                    resultDiv.innerHTML = '<span class="error">❌ Service Worker non supportato</span>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Errore: ${error.message}</span>`;
+                console.error(error);
+            }
+        }
+        
+        // Auto-inizializza al caricamento
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 Test page loaded');
+            testInit();
+        });
+    </script>
+</body>
+</html>
