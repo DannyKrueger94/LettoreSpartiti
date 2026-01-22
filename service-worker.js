@@ -75,28 +75,38 @@ self.addEventListener('fetch', (event) => {
     // Ignora richieste non-GET
     if (request.method !== 'GET') return;
     
+    // I PDF NON passano dal Service Worker - gestiti da IndexedDB
+    if (request.url.endsWith('.pdf') || request.url.includes('.pdf')) {
+        console.log('[Service Worker] Skipping PDF (handled by app):', request.url);
+        return; // Lascia gestire alla app senza intercettare
+    }
+    
     // Gestisci CDN esterni (PDF.js)
     const isCDN = request.url.includes('cdnjs.cloudflare.com');
     if (!isCDN && !request.url.startsWith(self.location.origin)) return;
-
-    // I PDF NON passano più dal Service Worker - gestiti da IndexedDB
-    if (request.url.endsWith('.pdf')) {
-        return; // Lascia gestire alla app
-    }
 
     event.respondWith(
         caches.match(request)
             .then((cachedResponse) => {
                 if (cachedResponse) {
+                    console.log('[Service Worker] Serving from cache:', request.url);
                     return cachedResponse;
                 }
+                console.log('[Service Worker] Fetching from network:', request.url);
                 return fetch(request);
             })
-            .catch(() => {
-                // Se offline e non in cache, prova a servire index.html
+            .catch((error) => {
+                console.error('[Service Worker] Fetch failed:', error);
+                // Se offline e non in cache, prova a servire index.html per documenti
                 if (request.destination === 'document') {
                     return caches.match('./index.html');
                 }
+                // Per altre risorse, ritorna una risposta vuota invece di undefined
+                return new Response('Offline - Resource not available', {
+                    status: 503,
+                    statusText: 'Service Unavailable',
+                    headers: new Headers({ 'Content-Type': 'text/plain' })
+                });
             })
     );
 });

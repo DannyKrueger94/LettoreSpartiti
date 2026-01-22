@@ -302,10 +302,10 @@ async function loadSpartitoFromLibrary(spartito, categoryName) {
             // Carica da rete usando il metodo legacy (fallback)
             success = await pdfHandler.loadDualPDF(spartito.notesFile, spartito.sheetFile);
             
-            if (success && dbManager) {
+            if (success && window.dbManager) {
                 // Salva in IndexedDB per uso futuro
                 try {
-                    await dbManager.downloadAndSaveSpartito(
+                    await window.dbManager.downloadAndSaveSpartito(
                         spartitoId,
                         categoryName,
                         spartito.title,
@@ -316,7 +316,7 @@ async function loadSpartitoFromLibrary(spartito, categoryName) {
                     console.log('💾 Spartito salvato in IndexedDB per uso offline');
                     
                     // Aggiorna badge
-                    const stats = await dbManager.getStats();
+                    const stats = await window.dbManager.getStats();
                     updateSyncBadge(stats.count);
                 } catch (saveError) {
                     console.warn('⚠️ Errore salvataggio in IndexedDB:', saveError);
@@ -353,17 +353,19 @@ async function loadSpartitoFromLibrary(spartito, categoryName) {
 }
 
 // ========== INDEXEDDB MANAGER ==========
-let dbManager = null;
+// dbManager è già dichiarato globalmente in dbManager.js
 
 // Inizializza DBManager
 async function initializeDB() {
     try {
-        dbManager = new DBManager();
-        await dbManager.init();
+        if (!window.dbManager) {
+            window.dbManager = new DBManager();
+        }
+        await window.dbManager.init();
         console.log('✅ DBManager inizializzato');
         
         // Mostra statistiche storage
-        const stats = await dbManager.getStats();
+        const stats = await window.dbManager.getStats();
         console.log(`📊 Storage: ${stats.count} spartiti (${stats.totalSizeMB.toFixed(2)} MB)`);
         
         // Aggiorna UI badge se necessario
@@ -385,7 +387,7 @@ function updateSyncBadge(count) {
 
 // Funzione per sincronizzare tutti gli spartiti
 async function syncAllSpartiti() {
-    if (!dbManager) {
+    if (!window.dbManager) {
         Toast.error('DBManager non inizializzato', 2000);
         return;
     }
@@ -419,10 +421,10 @@ async function syncAllSpartiti() {
         };
         
         // Sincronizza
-        const result = await dbManager.syncAllFromLibrary(spartitiCategories, onProgress);
+        const result = await window.dbManager.syncAllFromLibrary(spartitiCategories, onProgress);
         
         // Aggiorna badge
-        const stats = await dbManager.getStats();
+        const stats = await window.dbManager.getStats();
         updateSyncBadge(stats.count);
         
         Toast.success(`Sincronizzazione completata! ${result.success} scaricati, ${result.failed} errori`, 3000);
@@ -450,4 +452,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('🏠 [DOMContentLoaded] Chiamata showCategories()');
     showCategories();
     console.log('✅ [DOMContentLoaded] Inizializzazione completata');
+    
+    // Event listener per il pulsante sincronizza
+    const syncBtn = document.getElementById('syncBtn');
+    if (syncBtn) {
+        syncBtn.addEventListener('click', syncAllSpartiti);
+        console.log('🔗 [DOMContentLoaded] Event listener sincronizzazione aggiunto');
+    }
 });
