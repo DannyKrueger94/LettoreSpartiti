@@ -323,9 +323,10 @@ async function loadSpartitoFromLibrary(spartito, categoryName) {
                     });
                     console.log('💾 Spartito salvato in IndexedDB per uso offline');
                     
-                    // Aggiorna badge
+                    // Aggiorna badge - verifica se serve ancora sincronizzare
                     const stats = await window.dbManager.getStats();
-                    updateSyncBadge(stats.totalSpartiti);
+                    const totalSpartiti = Object.values(spartitiCategories).reduce((sum, cat) => sum + cat.spartiti.length, 0);
+                    updateSyncBadge(stats.totalSpartiti < totalSpartiti);
                 } catch (saveError) {
                     console.warn('⚠️ Errore salvataggio in IndexedDB:', saveError);
                     // Non bloccare l'utente se il salvataggio fallisce
@@ -376,20 +377,23 @@ async function initializeDB() {
         const stats = await window.dbManager.getStats();
         console.log(`📊 Storage: ${stats.totalSpartiti} spartiti (${stats.totalSizeMB} MB)`);
         
-        // Aggiorna UI badge se necessario
-        updateSyncBadge(stats.totalSpartiti);
+        // Controlla se ci sono spartiti da sincronizzare
+        const totalSpartiti = Object.values(spartitiCategories).reduce((sum, cat) => sum + cat.spartiti.length, 0);
+        const needsSync = stats.totalSpartiti < totalSpartiti;
+        
+        updateSyncBadge(needsSync);
     } catch (error) {
         console.error('❌ Errore inizializzazione DBManager:', error);
         Toast.error('Errore inizializzazione storage offline', 3000);
     }
 }
 
-// Aggiorna badge contatore spartiti scaricati
-function updateSyncBadge(count) {
+// Aggiorna badge sincronizzazione (mostra solo se ci sono spartiti da sincronizzare)
+function updateSyncBadge(needsSync) {
     const badge = document.getElementById('syncBadge');
     if (badge) {
-        badge.textContent = count;
-        badge.style.display = count > 0 ? 'flex' : 'none';
+        // needsSync = true se ci sono spartiti non sincronizzati
+        badge.style.display = needsSync ? 'flex' : 'none';
     }
 }
 
@@ -431,16 +435,10 @@ async function syncAllSpartiti() {
         // Sincronizza
         const result = await window.dbManager.syncAllFromLibrary(spartitiCategories, onProgress);
         
-        // Aggiorna badge - se tutti sincronizzati, nascondi il badge
+        // Aggiorna badge - nascondi se tutto sincronizzato
         const stats = await window.dbManager.getStats();
         const totalSpartiti = Object.values(spartitiCategories).reduce((sum, cat) => sum + cat.spartiti.length, 0);
-        
-        // Se tutti gli spartiti sono sincronizzati, nascondi il badge
-        if (stats.totalSpartiti >= totalSpartiti) {
-            updateSyncBadge(0); // Nascondi badge
-        } else {
-            updateSyncBadge(totalSpartiti - stats.totalSpartiti); // Mostra quanti mancano
-        }
+        updateSyncBadge(stats.totalSpartiti < totalSpartiti);
         
         Toast.success(`Sincronizzazione completata! ${result.success} scaricati, ${result.failed} errori`, 3000);
         
