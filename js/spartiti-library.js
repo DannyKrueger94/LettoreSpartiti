@@ -317,7 +317,7 @@ async function loadSpartitoFromLibrary(spartito, categoryName) {
                     
                     // Aggiorna badge
                     const stats = await window.dbManager.getStats();
-                    updateSyncBadge(stats.count);
+                    updateSyncBadge(stats.totalSpartiti);
                 } catch (saveError) {
                     console.warn('⚠️ Errore salvataggio in IndexedDB:', saveError);
                     // Non bloccare l'utente se il salvataggio fallisce
@@ -366,10 +366,10 @@ async function initializeDB() {
         
         // Mostra statistiche storage
         const stats = await window.dbManager.getStats();
-        console.log(`📊 Storage: ${stats.count} spartiti (${stats.totalSizeMB.toFixed(2)} MB)`);
+        console.log(`📊 Storage: ${stats.totalSpartiti} spartiti (${stats.totalSizeMB} MB)`);
         
         // Aggiorna UI badge se necessario
-        updateSyncBadge(stats.count);
+        updateSyncBadge(stats.totalSpartiti);
     } catch (error) {
         console.error('❌ Errore inizializzazione DBManager:', error);
         Toast.error('Errore inizializzazione storage offline', 3000);
@@ -425,7 +425,7 @@ async function syncAllSpartiti() {
         
         // Aggiorna badge
         const stats = await window.dbManager.getStats();
-        updateSyncBadge(stats.count);
+        updateSyncBadge(stats.totalSpartiti);
         
         Toast.success(`Sincronizzazione completata! ${result.success} scaricati, ${result.failed} errori`, 3000);
         
