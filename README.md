@@ -1,173 +1,143 @@
-## Come aggiungere spartiti:
+# 🎼 Lettore Spartiti Musicali PWA
 
-1. Copia i file PDF nella cartella /spartiti/path
-2. Aggiungi il nome del file nella lista in `js/spartiti-library.js`
-3. Fare il push su GIT
+Progressive Web App per leggere spartiti PDF con auto-scroll e funzionalità offline.
 
+## 🚀 Deployment su GitHub Pages
 
-# 🎸 Lettore Spartiti con Auto-Scroll
+### Configurazione Attuale
+- **Repository**: https://github.com/DannyKrueger94/LettoreSpartiti
+- **Branch**: `pwa`
+- **URL Deployato**: https://dannykrueger94.github.io/LettoreSpartiti/
 
-App web per leggere spartiti PDF mentre suoni la chitarra, con scroll automatico a velocità variabile.
+### Passi per il Deployment
 
-## 📋 Caratteristiche
+1. **Verifica che GitHub Pages sia abilitato**:
+   - Vai su Settings → Pages
+   - Source: Deploy from a branch
+   - Branch: `pwa` (root folder)
+   - Salva
 
-✅ **Libreria spartiti organizzata per categorie** - Naviga tra categorie e scegli lo spartito  
-✅ **Sistema a cartelle** - Organizza i tuoi spartiti in categorie personalizzate  
-✅ Carica spartiti in formato PDF (drag & drop o selezione file)  
-✅ Auto-scroll fluido e continuo  
-✅ Velocità regolabile da x0.1 a x1.5 (formato moltiplicatore)  
-✅ Controlli sempre visibili in alto durante la lettura  
-✅ Modalità schermo intero  
-✅ Ottimizzato per tablet Android  
-✅ Interfaccia scura moderna con gradienti  
-
-## 🚀 Come Usare
-
-### Aggiungi spartiti alla libreria per categorie:
-
-1. **Crea cartelle** in `spartiti/` per organizzare i tuoi PDF:
-   ```
-   spartiti/
-   ├── Natale/
-   │   ├── Jingle Bells.pdf
-   │   └── All I Want For Christmas.pdf
-   ├── Classici/
-   │   ├── Stand By Me.pdf
-   │   └── Shallow.pdf
-   └── Rock/
-       └── ...
-   ```
-
-2. **Apri** `js/spartiti-library.js` e aggiungi le tue categorie:
-   ```javascript
-   const spartitiCategories = {
-       "Natale 🎄": {
-           icon: "🎄",
-           spartiti: [
-               { title: "Jingle Bells", file: "spartiti/Natale/Jingle Bells.pdf"}
-           ]
-       },
-       "Rock 🎸": {
-           icon: "🤘",
-           spartiti: [
-               { title: "Highway to Hell", file: "spartiti/Rock/Highway to Hell.pdf"}
-           ]
-       }
-   };
-   ```
-
-3. **Refresh** la pagina - vedi le categorie come card, clicca per aprire! 🎵
-
-### Su PC (per testare):
-
-1. **Apri il file** `index.html` con un browser moderno (Chrome, Firefox, Edge)
-2. **Naviga nella libreria**:
-   - Vedi le categorie nella pagina principale
-   - Clicca su una categoria per vedere gli spartiti
-   - Usa 🔙 per tornare alle categorie
-   - Oppure carica un nuovo file PDF (drag & drop)
-3. **Controlla lo scroll** (quando lo spartito è aperto):
-   - ▶️ Play/Pause: avvia o ferma lo scroll
-   - Slider: regola la velocità (x0.1 - x1.5)
-   - ⟲ Reset: torna all'inizio
-   - 🔙 Torna al menu
-   - ⛶ Schermo intero
-
-### Su Tablet:
-
-#### Metodo 1: Copia locale (consigliato per uso offline)
-1. Copia l'intera cartella `LettoreMusica` sul tablet
-2. Apri il file `index.html` con un browser
-3. Aggiungi alla home screen (Chrome: Menu → "Aggiungi a schermata Home")
-
-#### Metodo 2: Server locale
-1. Sul PC, nella cartella del progetto, avvia un server HTTP:
+2. **Commit e Push delle modifiche**:
    ```bash
-   python -m http.server 8000
+   git add .
+   git commit -m "Fix: Corretto manifest e service worker per GitHub Pages"
+   git push origin pwa
    ```
-2. Sul tablet (connesso alla stessa rete WiFi):
-   - Trova l'IP del PC (es: `ipconfig` su Windows)
-   - Apri browser e vai su `http://IP_DEL_PC:8000`
 
-#### Metodo 3: Hosting online (GitHub Pages)
-Carica il progetto su GitHub Pages per accesso da ovunque!
+3. **Aspetta 1-2 minuti** per il deployment automatico
 
-**Passi:**
-1. Crea repository GitHub
-2. Carica tutti i file (inclusa cartella `spartiti/` con i PDF)
-3. Settings → Pages → Source: `main` branch
-4. Ottieni link tipo: `https://tuonome.github.io/lettore-spartiti`
-5. Accedi da qualsiasi dispositivo! 🌍
+4. **Verifica il deployment**:
+   - Visita: https://dannykrueger94.github.io/LettoreSpartiti/
+   - Apri DevTools (F12) → Console per vedere eventuali errori
 
-## 📁 Struttura Progetto
+## 🔍 Come Testare
+
+### Test da Desktop
+1. Apri Chrome/Edge
+2. Vai su: https://dannykrueger94.github.io/LettoreSpartiti/
+3. Apri DevTools (F12)
+4. Vai su **Application** → Service Workers
+   - Verifica che il Service Worker sia registrato e attivo
+5. Vai su **Application** → Manifest
+   - Verifica che il manifest sia caricato correttamente
+6. Prova a caricare uno spartito dalla libreria
+
+### Test Offline
+1. Con DevTools aperto, vai su **Network**
+2. Seleziona "Offline" dal dropdown
+3. Ricarica la pagina (F5)
+4. L'app dovrebbe caricarsi anche offline
+
+### Test su Mobile (Installazione PWA)
+1. Apri il sito su Chrome Android
+2. Menu (⋮) → "Installa app" o "Aggiungi a Home"
+3. L'app verrà installata come app nativa
+4. Apri l'app dalla home screen
+
+## ⚠️ Problemi Comuni e Soluzioni
+
+### ❌ Problema: "Service Worker registration failed"
+**Causa**: GitHub Pages non è abilitato o il branch è sbagliato  
+**Soluzione**: Verifica Settings → Pages e che il branch sia `pwa`
+
+### ❌ Problema: "Failed to load manifest"
+**Causa**: Path non corretto nel manifest.json  
+**Soluzione**: Già corretto con `start_url: "/LettoreSpartiti/"`
+
+### ❌ Problema: "PDF.js non si carica offline"
+**Causa**: CDN esterno non cacheato  
+**Soluzione**: Già corretto, PDF.js è ora nell'APP_SHELL del Service Worker
+
+### ❌ Problema: "Icone non si caricano"
+**Causa**: Icone non nella cache  
+**Soluzione**: Già corretto, icone principali aggiunte all'APP_SHELL
+
+### ❌ Problema: "Spartiti non si caricano"
+**Causa**: File PDF non pushati su GitHub  
+**Soluzione**:
+```bash
+# Verifica che i PDF siano tracciati
+git status
+# Se sono ignorati, rimuovi dal .gitignore e aggiungi
+git add spartiti/
+git commit -m "Aggiunti spartiti PDF"
+git push origin pwa
+```
+
+## 🛠️ Debug in Produzione
+
+Per vedere i log del Service Worker in produzione:
+
+1. Apri DevTools → **Application** → Service Workers
+2. Clicca su "sw.js" per vedere i log
+3. Cerca messaggi tipo:
+   - ✅ `[SW] Installation complete`
+   - ✅ `[SW] Activated`
+   - ❌ `Failed to cache: <file>`
+
+## 📦 Struttura File Critici
 
 ```
-LettoreMusica/
-├── index.html              # Pagina principale
-├── css/
-│   └── style.css          # Stili e layout
+LettoreMusicale_PWA/
+├── index.html              # Entry point
+├── manifest.json           # PWA manifest (CONFIGURATO PER GITHUB PAGES)
+├── service-worker.js       # Service Worker (CACHE PDF.JS E ICONE)
 ├── js/
 │   ├── app.js             # Logica principale
 │   ├── pdfHandler.js      # Gestione PDF
-│   └── spartiti-library.js # Libreria spartiti con categorie
-├── spartiti/              # 📚 Organizza i tuoi PDF in cartelle!
+│   ├── dbManager.js       # IndexedDB storage
+│   └── spartiti-library.js # Catalogo spartiti
+├── spartiti/              # File PDF (DEVONO ESSERE SU GIT!)
 │   ├── Natale/
-│   │   ├── Jingle Bells.pdf
-│   │   └── All I Want For Christmas.pdf
 │   ├── Classici/
-│   │   ├── Stand By Me.pdf
-│   │   └── Shallow.pdf
-│   └── README.md
-├── .gitignore
-└── README.md              # Questa guida
+│   └── Corso Arpeggio/
+└── icons/                 # Icone PWA
 ```
 
-## 🛠️ Tecnologie Utilizzate
+## 🔧 Modifiche Applicate
 
-- **HTML5**: Struttura semantica
-- **CSS3**: Layout responsive con Flexbox
-- **JavaScript ES6+**: Logica applicazione
-- **PDF.js**: Libreria Mozilla per rendering PDF
-- **Canvas API**: Rendering grafico degli spartiti
+### ✅ Correzioni Effettuate
+- [x] Manifest.json: `start_url` e `scope` aggiornati per GitHub Pages (`/LettoreSpartiti/`)
+- [x] Service Worker: Aggiunte icone principali alla cache
+- [x] Service Worker: Aggiunto caching di PDF.js CDN per offline
+- [x] Service Worker: Gestione richieste CDN esterni
 
-## 💡 Tips
+### 🚧 Da Verificare
+- [ ] Tutti i file PDF degli spartiti sono pushati su GitHub
+- [ ] GitHub Pages è abilitato sul branch `pwa`
+- [ ] L'URL https://dannykrueger94.github.io/LettoreSpartiti/ è accessibile
 
-- **Velocità ideale**: Parti da x0.5 e regola in base al tempo del brano
-- **Organizzazione**: Crea categorie logiche (Natale, Rock, Pop, Difficili, Facili, ecc.)
-- **Navigazione**: Usa il pulsante 🔙 per tornare sempre alla vista categorie
-- **Tablet**: Funziona perfettamente su Android, iOS non supportato
-- **Schermo intero**: Essenziale su tablet per massimizzare lo spazio
-- **Multi-pagina**: Il PDF viene renderizzato come unico scroll continuo
-- **Touch**: Tocca ovunque sullo schermo per play/pause veloce
+## 📝 Prossimi Passi
 
-## 🔧 Personalizzazioni Future
+1. **Commit e push delle modifiche**
+2. **Verifica GitHub Pages settings**
+3. **Aspetta deployment automatico**
+4. **Testa l'URL pubblico**
+5. **Verifica installazione PWA su mobile**
 
-Idee per espandere il progetto:
-- 🎵 Caricamento playlist di spartiti
-- 🔖 Segnalibri e annotazioni
-- 🎨 Temi colore (chiaro/scuro/seppia)
-- ⏱️ Sincronizzazione con metronomo
-- 📊 Zoom spartito
-- 🔄 Rotazione schermo automatica
+## 📞 Supporto
 
-## 📝 Note Tecniche
-
-### Perché Web App e non app nativa?
-- ✅ Funziona su qualsiasi dispositivo senza installazione
-- ✅ Aggiornamenti istantanei (basta ricaricare la pagina)
-- ✅ Sviluppo più rapido e manutenzione semplice
-- ✅ Portabile: copia la cartella e funziona ovunque
-
-### Come funziona lo scroll?
-Usa `requestAnimationFrame()` per animazioni fluide a 60 FPS. Ogni frame scrolla di `velocità × 0.5` pixel.
-
-### Perché tutte le pagine in un'unica immagine?
-Rende lo scroll continuo senza interruzioni tra le pagine - esperienza più naturale durante l'esecuzione.
-
-## 📜 Licenza
-
-Progetto personale - Uso libero per scopi educativi e personali.
-
----
-
-**Buona musica! 🎵🎸**
+Se l'app ancora non funziona dopo questi fix:
+1. Condividi gli errori dalla Console (F12)
+2. Verifica che GitHub Pages sia attivo
+3. Controlla che i PDF siano nel repository remoto

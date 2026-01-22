@@ -14,7 +14,11 @@ const APP_SHELL = [
     './js/pdfHandler.js',
     './js/dbManager.js',
     './js/spartiti-library.js',
-    './manifest.json'
+    './manifest.json',
+    './icons/icon-192x192.png',
+    './icons/icon-512x512.png',
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
 ];
 
 // ========== INSTALLAZIONE ==========
@@ -68,9 +72,12 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const { request } = event;
 
-    // Ignora richieste non-GET e domini esterni
+    // Ignora richieste non-GET
     if (request.method !== 'GET') return;
-    if (!request.url.startsWith(self.location.origin)) return;
+    
+    // Gestisci CDN esterni (PDF.js)
+    const isCDN = request.url.includes('cdnjs.cloudflare.com');
+    if (!isCDN && !request.url.startsWith(self.location.origin)) return;
 
     // I PDF NON passano più dal Service Worker - gestiti da IndexedDB
     if (request.url.endsWith('.pdf')) {

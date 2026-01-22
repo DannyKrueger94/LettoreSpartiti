@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PWA - Diagnostica</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        h1 { color: #4ecca3; }
+        .test-section {
+            background: #16213e;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4ecca3;
+        }
+        .success { color: #4ecca3; }
+        .error { color: #ff6b6b; }
+        .warning { color: #ffd93d; }
+        button {
+            background: #4ecca3;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { background: #45b393; }
+        pre {
+            background: #0f0f1e;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .status { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Diagnostico PWA</h1>
+    <p>Questa pagina verifica che tutti i componenti della PWA siano configurati correttamente.</p>
+
+    <div class="test-section">
+        <h2>1. Service Worker</h2>
+        <div id="swStatus"></div>
+        <button onclick="testServiceWorker()">Test Service Worker</button>
+        <button onclick="unregisterSW()">Disinstalla SW</button>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Manifest.json</h2>
+        <div id="manifestStatus"></div>
+        <button onclick="testManifest()">Test Manifest</button>
+    </div>
+
+    <div class="test-section">
+        <h2>3. IndexedDB</h2>
+        <div id="dbStatus"></div>
+        <button onclick="testIndexedDB()">Test IndexedDB</button>
+        <button onclick="clearDB()">Pulisci DB</button>
+    </div>
+
+    <div class="test-section">
+        <h2>4. PDF.js</h2>
+        <div id="pdfjsStatus"></div>
+        <button onclick="testPDFjs()">Test PDF.js</button>
+    </div>
+
+    <div class="test-section">
+        <h2>5. File Spartiti</h2>
+        <div id="spartitiStatus"></div>
+        <button onclick="testSpartiti()">Test Spartiti</button>
+    </div>
+
+    <div class="test-section">
+        <h2>6. Cache Storage</h2>
+        <div id="cacheStatus"></div>
+        <button onclick="testCache()">Verifica Cache</button>
+        <button onclick="clearCache()">Pulisci Cache</button>
+    </div>
+
+    <script>
+        // Test Service Worker
+        async function testServiceWorker() {
+            const statusEl = document.getElementById('swStatus');
+            statusEl.innerHTML = '⏳ Testing...';
+            
+            if (!('serviceWorker' in navigator)) {
+                statusEl.innerHTML = '<div class="error">❌ Service Worker NON supportato</div>';
+                return;
+            }
+
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (registration) {
+                    statusEl.innerHTML = `
+                        <div class="success">✅ Service Worker registrato</div>
+                        <div class="status">Scope: ${registration.scope}</div>
+                        <div class="status">Stato: ${registration.active ? 'Attivo' : 'Non attivo'}</div>
+                    `;
+                } else {
+                    statusEl.innerHTML = '<div class="warning">⚠️ Service Worker non registrato. Aprire index.html</div>';
+                }
+            } catch (err) {
+                statusEl.innerHTML = `<div class="error">❌ Errore: ${err.message}</div>`;
+            }
+        }
+
+        async function unregisterSW() {
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration) {
+                await registration.unregister();
+                alert('Service Worker disinstallato. Ricarica la pagina.');
+                location.reload();
+            }
+        }
+
+        // Test Manifest
+        async function testManifest() {
+            const statusEl = document.getElementById('manifestStatus');
+            statusEl.innerHTML = '⏳ Testing...';
+            
+            try {
+                const response = await fetch('./manifest.json');
+                const manifest = await response.json();
+                statusEl.innerHTML = `
+                    <div class="success">✅ Manifest caricato</div>
+                    <pre>${JSON.stringify(manifest, null, 2)}</pre>
+                `;
+            } catch (err) {
+                statusEl.innerHTML = `<div class="error">❌ Errore: ${err.message}</div>`;
+            }
+        }
+
+        // Test IndexedDB
+        async function testIndexedDB() {
+            const statusEl = document.getElementById('dbStatus');
+            statusEl.innerHTML = '⏳ Testing...';
+            
+            try {
+                const request = indexedDB.open('SpartitiDB', 1);
+                
+                request.onsuccess = () => {
+                    const db = request.result;
+                    statusEl.innerHTML = `
+                        <div class="success">✅ Database aperto</div>
+                        <div class="status">Stores: ${Array.from(db.objectStoreNames).join(', ')}</div>
+                    `;
+                };
+                
+                request.onerror = () => {
+                    statusEl.innerHTML = `<div class="error">❌ Errore apertura DB</div>`;
+                };
+            } catch (err) {
+                statusEl.innerHTML = `<div class="error">❌ Errore: ${err.message}</div>`;
+            }
+        }
+
+        async function clearDB() {
+            await indexedDB.deleteDatabase('SpartitiDB');
+            alert('Database cancellato. Ricarica la pagina.');
+            location.reload();
+        }
+
+        // Test PDF.js
+        async function testPDFjs() {
+            const statusEl = document.getElementById('pdfjsStatus');
+            statusEl.innerHTML = '⏳ Testing...';
+            
+            if (typeof pdfjsLib !== 'undefined') {
+                statusEl.innerHTML = `
+                    <div class="success">✅ PDF.js caricato</div>
+                    <div class="status">Versione: ${pdfjsLib.version}</div>
+                `;
+            } else {
+                statusEl.innerHTML = '<div class="error">❌ PDF.js NON caricato. Aprire index.html</div>';
+            }
+        }
+
+        // Test Spartiti
+        async function testSpartiti() {
+            const statusEl = document.getElementById('spartitiStatus');
+            statusEl.innerHTML = '⏳ Testing...';
+            
+            const testFiles = [
+                'spartiti/Natale/Jingle Bells.pdf',
+                'spartiti/Classici/Stand By Me - Ben E. King.pdf'
+            ];
+            
+            let results = '';
+            for (const file of testFiles) {
+                try {
+                    const response = await fetch(file, { method: 'HEAD' });
+                    if (response.ok) {
+                        results += `<div class="success">✅ ${file}</div>`;
+                    } else {
+                        results += `<div class="error">❌ ${file} (${response.status})</div>`;
+                    }
+                } catch (err) {
+                    results += `<div class="error">❌ ${file} (Network error)</div>`;
+                }
+            }
+            
+            statusEl.innerHTML = results;
+        }
+
+        // Test Cache
+        async function testCache() {
+            const statusEl = document.getElementById('cacheStatus');
+            statusEl.innerHTML = '⏳ Testing...';
+            
+            const cacheNames = await caches.keys();
+            let html = '';
+            
+            for (const cacheName of cacheNames) {
+                const cache = await caches.open(cacheName);
+                const keys = await cache.keys();
+                html += `
+                    <div class="status"><strong>${cacheName}</strong> (${keys.length} files)</div>
+                    <pre>${keys.map(r => r.url).join('\n')}</pre>
+                `;
+            }
+            
+            if (!html) {
+                html = '<div class="warning">⚠️ Nessuna cache trovata</div>';
+            }
+            
+            statusEl.innerHTML = html;
+        }
+
+        async function clearCache() {
+            const cacheNames = await caches.keys();
+            for (const cacheName of cacheNames) {
+                await caches.delete(cacheName);
+            }
+            alert('Cache pulita. Ricarica la pagina.');
+            location.reload();
+        }
+
+        // Auto-test al caricamento
+        window.addEventListener('load', () => {
+            console.log('🔍 Pagina test caricata');
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</body>
+</html>

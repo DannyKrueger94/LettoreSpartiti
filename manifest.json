@@ -2,12 +2,12 @@
   "name": "Lettore Spartiti Musicali",
   "short_name": "SpartitiApp",
   "description": "App per leggere spartiti PDF mentre suoni la chitarra, con auto-scroll a velocità variabile",
-  "start_url": "./index.html",
+  "start_url": "/LettoreSpartiti/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#16213e",
   "orientation": "any",
-  "scope": "./",
+  "scope": "/LettoreSpartiti/",
   "icons": [
     {
       "src": "icons/icon-72x72.png",
