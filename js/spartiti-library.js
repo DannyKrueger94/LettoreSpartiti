@@ -119,6 +119,7 @@ function showCategories() {
     
     const libraryContainer = document.getElementById('libraryContainer');
     const libraryTitle = document.querySelector('.library-title');
+    const syncBtn = document.getElementById('syncBtn');
     
     console.log('📦 [showCategories] libraryContainer:', libraryContainer);
     console.log('📝 [showCategories] libraryTitle:', libraryTitle);
@@ -132,6 +133,9 @@ function showCategories() {
         console.error('❌ [showCategories] libraryTitle non trovato!');
         return;
     }
+    
+    // Mostra pulsante sincronizza solo nella schermata principale
+    if (syncBtn) syncBtn.style.display = 'flex';
     
     // Ripristina TUTTI gli stili CSS originali
     libraryTitle.style.background = '';
@@ -175,9 +179,13 @@ function showCategories() {
 function showCategoryContent(categoryName) {
     const libraryContainer = document.getElementById('libraryContainer');
     const libraryTitle = document.querySelector('.library-title');
+    const syncBtn = document.getElementById('syncBtn');
     const category = spartitiCategories[categoryName];
     
     currentCategory = categoryName;
+    
+    // Nascondi pulsante sincronizza quando non sei nella schermata principale
+    if (syncBtn) syncBtn.style.display = 'none';
     
     // SOLUZIONE: Rimuovo gli stili problematici dal library-title
     libraryTitle.style.background = 'none';
@@ -423,9 +431,16 @@ async function syncAllSpartiti() {
         // Sincronizza
         const result = await window.dbManager.syncAllFromLibrary(spartitiCategories, onProgress);
         
-        // Aggiorna badge
+        // Aggiorna badge - se tutti sincronizzati, nascondi il badge
         const stats = await window.dbManager.getStats();
-        updateSyncBadge(stats.totalSpartiti);
+        const totalSpartiti = Object.values(spartitiCategories).reduce((sum, cat) => sum + cat.spartiti.length, 0);
+        
+        // Se tutti gli spartiti sono sincronizzati, nascondi il badge
+        if (stats.totalSpartiti >= totalSpartiti) {
+            updateSyncBadge(0); // Nascondi badge
+        } else {
+            updateSyncBadge(totalSpartiti - stats.totalSpartiti); // Mostra quanti mancano
+        }
         
         Toast.success(`Sincronizzazione completata! ${result.success} scaricati, ${result.failed} errori`, 3000);
         

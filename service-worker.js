@@ -3,7 +3,7 @@
    I PDF sono gestiti da IndexedDB, non dalla cache
    ======================================== */
 
-const CACHE_VERSION = 'spartiti-shell-v1';
+const CACHE_VERSION = 'spartiti-shell-v2'; // ⬅️ INCREMENTATA per forzare aggiornamento
 
 // Solo i file base dell'app (app shell)
 const APP_SHELL = [
