@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Test - Spartiti Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            padding: 20px;
+        }
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .spartito-card {
+            background: #16213e;
+            border: 2px solid #4ecca3;
+            border-radius: 16px;
+            padding: 30px 24px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .spartito-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-load {
+            background: #4ecca3;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #console {
+            background: #0f0f1e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Veloce - Libreria Spartiti</h1>
+    <p>Questo test verifica se la libreria si popola correttamente</p>
+    
+    <h2 class="library-title">La mia libreria</h2>
+    <div id="libraryContainer" class="library-grid">
+        <!-- Le card verranno create qui -->
+    </div>
+    
+    <h2>Console Output:</h2>
+    <div id="console"></div>
+
+    <script>
+        // Override console.log per mostrarlo anche in pagina
+        const consoleDiv = document.getElementById('console');
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleDiv.textContent += args.join(' ') + '\n';
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        };
+        
+        console.log('🚀 Test iniziato');
+    </script>
+
+    <!-- Carica spartiti-library.js -->
+    <script src="js/spartiti-library.js"></script>
+    
+    <script>
+        // Attendi un po' e controlla
+        setTimeout(() => {
+            const container = document.getElementById('libraryContainer');
+            console.log('📦 Container trovato:', container !== null);
+            console.log('🎴 Numero card create:', container ? container.children.length : 0);
+            
+            if (container && container.children.length === 0) {
+                console.error('❌ PROBLEMA: Nessuna card creata!');
+                console.log('🔍 Verifica se spartitiCategories è definito:', typeof spartitiCategories);
+                if (typeof spartitiCategories !== 'undefined') {
+                    console.log('📚 Categorie disponibili:', Object.keys(spartitiCategories));
+                }
+            } else {
+                console.log('✅ Card create con successo!');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

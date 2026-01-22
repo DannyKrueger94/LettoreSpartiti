@@ -115,8 +115,23 @@ let currentCategory = null;
 
 // Funzione per mostrare le categorie (pagina principale)
 function showCategories() {
+    console.log('🏠 [showCategories] Inizio rendering categorie');
+    
     const libraryContainer = document.getElementById('libraryContainer');
     const libraryTitle = document.querySelector('.library-title');
+    
+    console.log('📦 [showCategories] libraryContainer:', libraryContainer);
+    console.log('📝 [showCategories] libraryTitle:', libraryTitle);
+    
+    if (!libraryContainer) {
+        console.error('❌ [showCategories] libraryContainer non trovato!');
+        return;
+    }
+    
+    if (!libraryTitle) {
+        console.error('❌ [showCategories] libraryTitle non trovato!');
+        return;
+    }
     
     // Ripristina TUTTI gli stili CSS originali
     libraryTitle.style.background = '';
@@ -133,8 +148,12 @@ function showCategories() {
     
     libraryContainer.innerHTML = '';
     
+    console.log('📚 [showCategories] Numero categorie:', Object.keys(spartitiCategories).length);
+    
     Object.keys(spartitiCategories).forEach(categoryName => {
         const category = spartitiCategories[categoryName];
+        console.log(`📁 [showCategories] Creando card per: ${categoryName}`);
+        
         const card = document.createElement('div');
         card.className = 'spartito-card category-card';
         card.innerHTML = `
@@ -148,6 +167,8 @@ function showCategories() {
         
         libraryContainer.appendChild(card);
     });
+    
+    console.log(`✅ [showCategories] Rendering completato. ${libraryContainer.children.length} card create`);
 }
 
 // Funzione per mostrare gli spartiti di una categoria
@@ -422,6 +443,11 @@ async function syncAllSpartiti() {
 
 // Inizializza la libreria al caricamento
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 [DOMContentLoaded] Inizializzazione spartiti-library.js');
+    console.log('📚 [DOMContentLoaded] spartitiCategories:', spartitiCategories);
+    console.log('📦 [DOMContentLoaded] Chiamata initializeDB()');
     initializeDB();
+    console.log('🏠 [DOMContentLoaded] Chiamata showCategories()');
     showCategories();
+    console.log('✅ [DOMContentLoaded] Inizializzazione completata');
 });
