@@ -313,14 +313,14 @@ async function loadSpartitoFromLibrary(spartito, categoryName) {
             if (success && window.dbManager) {
                 // Salva in IndexedDB per uso futuro
                 try {
-                    await window.dbManager.downloadAndSaveSpartito(
-                        spartitoId,
-                        categoryName,
-                        spartito.title,
-                        spartito.notesFile,
-                        spartito.sheetFile,
-                        spartito.videoUrl
-                    );
+                    await window.dbManager.downloadAndSaveSpartito({
+                        id: spartitoId,
+                        category: categoryName,
+                        title: spartito.title,
+                        notesFile: spartito.notesFile,
+                        sheetFile: spartito.sheetFile,
+                        videoUrl: spartito.videoUrl
+                    });
                     console.log('💾 Spartito salvato in IndexedDB per uso offline');
                     
                     // Aggiorna badge
