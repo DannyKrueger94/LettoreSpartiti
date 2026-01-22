@@ -618,16 +618,16 @@ main {
 
 .sync-badge {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: -2px;
+    right: -2px;
     background: #ff4444;
     color: white;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     font-weight: bold;
     padding: 0;
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
