@@ -133,21 +133,30 @@
                     .then((registration) => {
                         console.log('✅ Service Worker registrato con successo:', registration.scope);
                         
-                        // Controlla aggiornamenti ogni 60 secondi
-                        setInterval(() => {
-                            registration.update();
-                        }, 60000);
-                        
-                        // Notifica quando c'è un nuovo Service Worker in attesa
+                        // FORZA aggiornamento immediato se c'è una nuova versione
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
+                            console.log('🔄 Nuova versione Service Worker trovata!');
+                            
                             newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    // Nuovo Service Worker disponibile
-                                    if (confirm('Nuova versione disponibile! Vuoi aggiornare?')) {
-                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                    // Nuova versione disponibile - AGGIORNA AUTOMATICAMENTE
+                                    console.log('🔄 Attivazione nuova versione...');
+                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                    
+                                    // Ricarica pagina dopo 500ms per applicare aggiornamenti
+                                    setTimeout(() => {
+                                        console.log('♻️ Ricaricamento per applicare aggiornamenti...');
                                         window.location.reload();
-                                    }
+                                    }, 500);
+                                }
+                            });
+                        });
+                        
+                        // Controlla aggiornamenti ogni 10 secondi (più frequente)
+                        setInterval(() => {
+                            registration.update();
+                        }, 10000);
                                 }
                             });
                         });

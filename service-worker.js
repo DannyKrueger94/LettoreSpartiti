@@ -3,7 +3,7 @@
    I PDF sono gestiti da IndexedDB, non dalla cache
    ======================================== */
 
-const CACHE_VERSION = 'spartiti-shell-v3'; // ⬅️ INCREMENTATA per nuovo badge
+const CACHE_VERSION = 'spartiti-shell-v4'; // ⬅️ INCREMENTATA per forzare update immediato
 
 // Solo i file base dell'app (app shell)
 const APP_SHELL = [
@@ -43,6 +43,14 @@ self.addEventListener('install', (event) => {
                 return self.skipWaiting();
             })
     );
+});
+
+// ========== MESSAGGI ==========
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        console.log('⚡ [SW] Skip waiting - attivazione immediata');
+        self.skipWaiting();
+    }
 });
 
 // ========== ATTIVAZIONE ==========
