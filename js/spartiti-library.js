@@ -15,23 +15,6 @@
    ======================================== */
 
 const spartitiCategories = {
-    "Natale 🎄": {
-        icon: "🎄",
-        spartiti: [
-            { 
-                title: "All I Want For Christmas Is You", 
-                notesFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey - Notes.pdf",
-                sheetFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey.pdf",
-                videoUrl: "https://www.youtube.com/watch?v=2PZGR5vRDFE"
-            },
-            { 
-                title: "Jingle Bells", 
-                notesFile: "spartiti/Natale/Jingle Bells - Notes.pdf",
-                sheetFile: "spartiti/Natale/Jingle Bells.pdf",
-                videoUrl: "https://www.youtube.com/watch?v=LrVe8FmY3-o"
-            }
-        ]
-    },
     "Classici 🎸": {
         icon: "🎸",
         spartiti: [
@@ -105,6 +88,53 @@ const spartitiCategories = {
                 notesFile: "",
                 sheetFile: "spartiti/Corso Arpeggio/Shape of My Heart.pdf",
                 videoUrl: ""
+            },
+            {
+                title: "Boulevard of Broken Dreams",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Boulevard of Broken Dreams.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Dust in the Wind",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Dust in the Wind.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Let It Be",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Let It Be.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Nothing Else Matters",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Nothing Else Matters.pdf",
+                videoUrl: ""
+            },
+            {
+                title: "Righ Here Waiting",
+                notesFile: "",
+                sheetFile: "spartiti/Corso Arpeggio/Righ Here Waiting.pdf",
+                videoUrl: ""
+            }
+        ]
+    },
+    "Natale 🎄": {
+        icon: "🎄",
+        spartiti: [
+            { 
+                title: "All I Want For Christmas Is You", 
+                notesFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey - Notes.pdf",
+                sheetFile: "spartiti/Natale/All I Want For Christmas Is You - Mariah Carey.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=2PZGR5vRDFE"
+            },
+            { 
+                title: "Jingle Bells", 
+                notesFile: "spartiti/Natale/Jingle Bells - Notes.pdf",
+                sheetFile: "spartiti/Natale/Jingle Bells.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=LrVe8FmY3-o"
             }
         ]
     }
