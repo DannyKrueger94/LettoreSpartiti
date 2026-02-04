@@ -119,7 +119,7 @@ const spartitiCategories = {
                 sheetFile: "spartiti/Corso Arpeggio/Righ Here Waiting.pdf",
                 videoUrl: ""
             }
-            
+        
         ]
     },
     "Natale 🎄": {
