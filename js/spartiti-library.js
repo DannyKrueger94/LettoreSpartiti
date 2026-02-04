@@ -471,7 +471,16 @@ async function syncAllSpartiti() {
         const totalSpartiti = Object.values(spartitiCategories).reduce((sum, cat) => sum + cat.spartiti.length, 0);
         updateSyncBadge(stats.totalSpartiti < totalSpartiti);
         
-        Toast.success(`Sincronizzazione completata! ${result.success} scaricati, ${result.failed} errori`, 3000);
+        // Mostra risultato con dettagli errori se presenti
+        if (result.failed > 0) {
+            console.error('❌ Errori durante la sincronizzazione:');
+            result.errors.forEach(err => {
+                console.error(`  - ${err.category} / ${err.title}: ${err.error}`);
+            });
+            Toast.error(`Sincronizzazione completata con ${result.failed} errori. Controlla la console per i dettagli.`, 5000);
+        } else {
+            Toast.success(`Sincronizzazione completata! ${result.success} scaricati`, 3000);
+        }
         
     } catch (error) {
         console.error('❌ Errore sincronizzazione:', error);

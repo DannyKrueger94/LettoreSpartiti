@@ -230,7 +230,8 @@ class DBManager {
             total: 0,
             success: 0,
             failed: 0,
-            skipped: 0
+            skipped: 0,
+            errors: [] // Array per tracciare i dettagli degli errori
         };
 
         try {
@@ -270,6 +271,11 @@ class DBManager {
                     } catch (error) {
                         console.error('❌ [DB] Fallito:', spartito.title, error);
                         stats.failed++;
+                        stats.errors.push({
+                            title: spartito.title,
+                            category: categoryName,
+                            error: error.message || error.toString()
+                        });
                     }
                 }
             }
