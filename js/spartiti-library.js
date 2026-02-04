@@ -104,7 +104,7 @@ const spartitiCategories = {
             {
                 title: "Let It Be",
                 notesFile: "",
-                sheetFile: "spartiti/Corso Arpeggio/Let It Be.pdf",
+                sheetFile: "spartiti/Corso Arpeggio/Let it Be.pdf",
                 videoUrl: ""
             },
             {
@@ -114,12 +114,11 @@ const spartitiCategories = {
                 videoUrl: ""
             },
             {
-                title: "Righ Here Waiting",
+                title: "Right Here Waiting",
                 notesFile: "",
-                sheetFile: "spartiti/Corso Arpeggio/Righ Here Waiting.pdf",
+                sheetFile: "spartiti/Corso Arpeggio/Right Here Waiting.pdf",
                 videoUrl: ""
             }
-        
         ]
     },
     "Natale 🎄": {
@@ -471,16 +470,7 @@ async function syncAllSpartiti() {
         const totalSpartiti = Object.values(spartitiCategories).reduce((sum, cat) => sum + cat.spartiti.length, 0);
         updateSyncBadge(stats.totalSpartiti < totalSpartiti);
         
-        // Mostra risultato con dettagli errori se presenti
-        if (result.failed > 0) {
-            console.error('❌ Errori durante la sincronizzazione:');
-            result.errors.forEach(err => {
-                console.error(`  - ${err.category} / ${err.title}: ${err.error}`);
-            });
-            Toast.error(`Sincronizzazione completata con ${result.failed} errori. Controlla la console per i dettagli.`, 5000);
-        } else {
-            Toast.success(`Sincronizzazione completata! ${result.success} scaricati`, 3000);
-        }
+        Toast.success(`Sincronizzazione completata! ${result.success} scaricati, ${result.failed} errori`, 3000);
         
     } catch (error) {
         console.error('❌ Errore sincronizzazione:', error);
