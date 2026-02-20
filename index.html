@@ -133,6 +133,11 @@
                     .then((registration) => {
                         console.log('✅ Service Worker registrato con successo:', registration.scope);
                         
+                        // FORZA controllo aggiornamento immediato all'apertura
+                        registration.update().then(() => {
+                            console.log('🔄 Controllo aggiornamenti completato');
+                        });
+                        
                         // FORZA aggiornamento immediato se c'è una nuova versione
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
@@ -153,13 +158,10 @@
                             });
                         });
                         
-                        // Controlla aggiornamenti ogni 10 secondi (più frequente)
+                        // Controlla aggiornamenti ogni 30 secondi
                         setInterval(() => {
                             registration.update();
-                        }, 10000);
-                                }
-                            });
-                        });
+                        }, 30000);
                     })
                     .catch((error) => {
                         console.error('❌ Registrazione Service Worker fallita:', error);

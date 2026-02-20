@@ -1,9 +1,10 @@
 /* ========================================
-   SERVICE WORKER - App Shell Cache Only
+   SERVICE WORKER - App Shell con aggiornamento automatico
    I PDF sono gestiti da IndexedDB, non dalla cache
    ======================================== */
 
-const CACHE_VERSION = 'spartiti-shell-v5'; // ⬅️ INCREMENTATA per badge più piccolo
+// Versione cache con timestamp - si aggiorna automaticamente ad ogni modifica
+const CACHE_VERSION = 'spartiti-shell-v6-20260204'; // ⬅️ Cambia questa data quando modifichi i file
 
 // Solo i file base dell'app (app shell)
 const APP_SHELL = [
@@ -19,6 +20,16 @@ const APP_SHELL = [
     './icons/icon-512x512.png',
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+];
+
+// File dell'app che devono essere sempre aggiornati (Network-First)
+const NETWORK_FIRST_RESOURCES = [
+    './js/app.js',
+    './js/pdfHandler.js',
+    './js/dbManager.js',
+    './js/spartiti-library.js',
+    './css/style.css',
+    './index.html'
 ];
 
 // ========== INSTALLAZIONE ==========
@@ -76,7 +87,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// ========== FETCH - Cache First per app shell ==========
+// ========== FETCH - Network First per app, Cache First per CDN ==========
 self.addEventListener('fetch', (event) => {
     const { request } = event;
 
@@ -89,34 +100,76 @@ self.addEventListener('fetch', (event) => {
         return; // Lascia gestire alla app senza intercettare
     }
     
-    // Gestisci CDN esterni (PDF.js)
+    // Gestisci CDN esterni (PDF.js) con Cache-First
     const isCDN = request.url.includes('cdnjs.cloudflare.com');
-    if (!isCDN && !request.url.startsWith(self.location.origin)) return;
-
-    event.respondWith(
-        caches.match(request)
-            .then((cachedResponse) => {
-                if (cachedResponse) {
-                    console.log('[Service Worker] Serving from cache:', request.url);
-                    return cachedResponse;
-                }
-                console.log('[Service Worker] Fetching from network:', request.url);
-                return fetch(request);
-            })
-            .catch((error) => {
-                console.error('[Service Worker] Fetch failed:', error);
-                // Se offline e non in cache, prova a servire index.html per documenti
-                if (request.destination === 'document') {
-                    return caches.match('./index.html');
-                }
-                // Per altre risorse, ritorna una risposta vuota invece di undefined
-                return new Response('Offline - Resource not available', {
-                    status: 503,
-                    statusText: 'Service Unavailable',
-                    headers: new Headers({ 'Content-Type': 'text/plain' })
-                });
-            })
+    
+    // Verifica se è una risorsa dell'app che deve usare Network-First
+    const isAppResource = NETWORK_FIRST_RESOURCES.some(resource => 
+        request.url.includes(resource)
     );
+    
+    if (isAppResource) {
+        // NETWORK-FIRST per file dell'app (sempre aggiornati)
+        event.respondWith(
+            fetch(request)
+                .then((networkResponse) => {
+                    // Aggiorna la cache con la nuova versione
+                    const responseClone = networkResponse.clone();
+                    caches.open(CACHE_VERSION).then((cache) => {
+                        cache.put(request, responseClone);
+                    });
+                    console.log('[Service Worker] Network-First (updated):', request.url);
+                    return networkResponse;
+                })
+                .catch(() => {
+                    // Se offline, usa la cache come fallback
+                    return caches.match(request).then((cachedResponse) => {
+                        if (cachedResponse) {
+                            console.log('[Service Worker] Network failed, using cache:', request.url);
+                            return cachedResponse;
+                        }
+                        // Se non c'è nemmeno in cache, ritorna errore
+                        return new Response('Offline - Resource not available', {
+                            status: 503,
+                            statusText: 'Service Unavailable',
+                            headers: new Headers({ 'Content-Type': 'text/plain' })
+                        });
+                    });
+                })
+        );
+    } else if (isCDN || request.url.startsWith(self.location.origin)) {
+        // CACHE-FIRST per CDN e icone (risorse statiche)
+        event.respondWith(
+            caches.match(request)
+                .then((cachedResponse) => {
+                    if (cachedResponse) {
+                        console.log('[Service Worker] Cache-First:', request.url);
+                        return cachedResponse;
+                    }
+                    console.log('[Service Worker] Fetching from network:', request.url);
+                    return fetch(request).then((networkResponse) => {
+                        // Salva in cache per uso futuro
+                        const responseClone = networkResponse.clone();
+                        caches.open(CACHE_VERSION).then((cache) => {
+                            cache.put(request, responseClone);
+                        });
+                        return networkResponse;
+                    });
+                })
+                .catch((error) => {
+                    console.error('[Service Worker] Fetch failed:', error);
+                    // Se offline e non in cache, prova a servire index.html per documenti
+                    if (request.destination === 'document') {
+                        return caches.match('./index.html');
+                    }
+                    return new Response('Offline - Resource not available', {
+                        status: 503,
+                        statusText: 'Service Unavailable',
+                        headers: new Headers({ 'Content-Type': 'text/plain' })
+                    });
+                })
+        );
+    }
 });
 
 console.log('✅ [SW] Service Worker loaded');
