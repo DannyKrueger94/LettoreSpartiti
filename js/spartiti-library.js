@@ -38,6 +38,36 @@ const spartitiCategories = {
             }
         ]
     },
+    "Arpeggio 🎻": {
+        icon: "🎻",
+        spartiti: [
+            { 
+                title: "Always With Me - Spirited Away",
+                sheetFile: "spartiti/Arpeggio/Always With Me - Spirited Away.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=LUSKQqCmBVU&list=WL&index=13"
+            },
+                        { 
+                title: "Merry Go Round of Life - Howl's Moving Castle",
+                sheetFile: "spartiti/Arpeggio/Merry Go Round of Life - Howl's Moving Castle.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=mB3lWr6iYmI&list=WL&index=17"
+            },
+                        { 
+                title: "Misty Mountains - The Hobbit",
+                sheetFile: "spartiti/Arpeggio/Misty Mountains - The Hobbit.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=8AqCwoRINgo&list=WL&index=14"
+            },
+                        { 
+                title: "One Summer's Day - Spirited Away",
+                sheetFile: "spartiti/Arpeggio/One Summer's Day - Spirited Away.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=D2Vx3U09_hw&list=WL&index=18"
+            },
+                        { 
+                title: "Pokemon -Littleroot Town",
+                sheetFile: "spartiti/Arpeggio/Pokemon -Littleroot Town.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=ZDYyDP6VX2A&list=WL&index=12"
+            },
+        ]
+    },
     "Corso Arpeggio 🎼": {
         icon: "🎸",
         spartiti: [
