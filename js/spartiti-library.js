@@ -474,6 +474,31 @@ async function syncAllSpartiti() {
         if (syncBtn) syncBtn.disabled = true;
         if (syncProgress) syncProgress.style.display = 'block';
         
+        // CONTROLLO VERSIONE APP (Service Worker)
+        if ('serviceWorker' in navigator) {
+            console.log('🔄 Controllo aggiornamenti app...');
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration) {
+                await registration.update();
+                console.log('✅ Controllo versione app completato');
+                
+                // Se c'è un nuovo worker in attesa, attivalo
+                if (registration.waiting) {
+                    console.log('🆕 Nuova versione app disponibile!');
+                    Toast.info('Nuova versione app trovata! Aggiornamento in corso...', 3000);
+                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    
+                    // Ricarica la pagina dopo l'attivazione
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    });
+                    return; // Esce dalla funzione, la pagina si ricaricherà
+                }
+            }
+        }
+        
         Toast.info('Sincronizzazione avviata...', 2000);
         
         let completed = 0;
@@ -500,7 +525,16 @@ async function syncAllSpartiti() {
         const totalSpartiti = Object.values(spartitiCategories).reduce((sum, cat) => sum + cat.spartiti.length, 0);
         updateSyncBadge(stats.totalSpartiti < totalSpartiti);
         
-        Toast.success(`Sincronizzazione completata! ${result.success} scaricati, ${result.failed} errori`, 3000);
+        // Mostra risultato con dettagli errori se presenti
+        if (result.failed > 0) {
+            console.error('❌ Errori durante la sincronizzazione:');
+            result.errors.forEach(err => {
+                console.error(`  - ${err.category} / ${err.title}: ${err.error}`);
+            });
+            Toast.error(`Sincronizzazione completata con ${result.failed} errori. Controlla la console per i dettagli.`, 5000);
+        } else {
+            Toast.success(`Sincronizzazione completata! ${result.success} scaricati`, 3000);
+        }
         
     } catch (error) {
         console.error('❌ Errore sincronizzazione:', error);
