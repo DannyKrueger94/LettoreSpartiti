@@ -46,26 +46,51 @@ const spartitiCategories = {
                 sheetFile: "spartiti/Arpeggio/Always With Me - Spirited Away.pdf",
                 videoUrl: "https://www.youtube.com/watch?v=LUSKQqCmBVU&list=WL&index=13"
             },
-                        { 
+            { 
                 title: "Merry Go Round of Life - Howl's Moving Castle",
                 sheetFile: "spartiti/Arpeggio/Merry Go Round of Life - Howl's Moving Castle.pdf",
                 videoUrl: "https://www.youtube.com/watch?v=mB3lWr6iYmI&list=WL&index=17"
             },
-                        { 
+            { 
                 title: "Misty Mountains - The Hobbit",
                 sheetFile: "spartiti/Arpeggio/Misty Mountains - The Hobbit.pdf",
                 videoUrl: "https://www.youtube.com/watch?v=8AqCwoRINgo&list=WL&index=14"
             },
-                        { 
+            { 
                 title: "One Summer's Day - Spirited Away",
                 sheetFile: "spartiti/Arpeggio/One Summer's Day - Spirited Away.pdf",
                 videoUrl: "https://www.youtube.com/watch?v=D2Vx3U09_hw&list=WL&index=18"
             },
-                        { 
+            { 
                 title: "Pokemon -Littleroot Town",
                 sheetFile: "spartiti/Arpeggio/Pokemon -Littleroot Town.pdf",
                 videoUrl: "https://www.youtube.com/watch?v=ZDYyDP6VX2A&list=WL&index=12"
             },
+                        { 
+                title: "Binks' Sake - One Piece",
+                sheetFile: "spartiti/Arpeggio/Binks' Sake - One Piece.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=xQY_Vg3kHLw&list=WL&index=9"
+            },
+                        { 
+                title: "Gladiator - Now we are Free",
+                sheetFile: "spartiti/Arpeggio/Gladiator - Now we are Free.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=OhQiWMyR0lM&list=WL&index=10"
+            },
+                        { 
+                title: "He's a Pirate - Pirates of the Caribbean",
+                sheetFile: "spartiti/Arpeggio/He's a Pirate - Pirates of the Caribbean.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=4BfWjydfxws&list=WL&index=8"
+            },
+                        { 
+                title: "I'll Make a Man out of you - Mulan",
+                sheetFile: "spartiti/Arpeggio/I'll Make a Man out of you - Mulan.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=8shBuGwWWbM&list=WL&index=19"
+            },
+            { 
+                title: "The Godfather - Main Theme",
+                sheetFile: "spartiti/Arpeggio/The Godfather - Main Theme.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=YRbW6mXvxPw&list=WL&index=16"
+            }
         ]
     },
     "Corso Arpeggio 🎼": {
