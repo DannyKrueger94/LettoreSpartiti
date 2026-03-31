@@ -76,13 +76,21 @@
             <div class="library-section">
                 <div class="library-header">
                     <h2 class="library-title">La mia libreria</h2>
-                    <button id="syncBtn" class="btn-sync" title="Scarica tutti gli spartiti per uso offline">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
-                        </svg>
-                        <span>Sincronizza spartiti</span>
-                        <span id="syncBadge" class="sync-badge" style="display: none;">!</span>
-                    </button>
+                    <div class="library-actions">
+                        <button id="syncBtn" class="btn-sync" title="Scarica tutti gli spartiti per uso offline">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                            </svg>
+                            <span>Sincronizza spartiti</span>
+                            <span id="syncBadge" class="sync-badge" style="display: none;">!</span>
+                        </button>
+                        <button id="clearCacheBtn" class="btn-clear-cache" title="Pulisci cache e ricarica ultima versione">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4c-1.48 0-2.85.43-4.01 1.17l1.46 1.46C10.21 6.23 11.08 6 12 6c3.04 0 5.5 2.46 5.5 5.5v.5H19l-3 3 3 3h-1.5v.5c0 3.04-2.46 5.5-5.5 5.5-1.48 0-2.85-.43-4.01-1.17l-1.46 1.46C7.96 20.57 9.86 21 12 21c4.42 0 8-3.58 8-8 0-.05-.01-.1-.01-.14.01-.11.01-.21.01-.32-.01-.13-.02-.26-.04-.39.28-.32.46-.74.46-1.15h-.07zM6 12c0-3.04 2.46-5.5 5.5-5.5.17 0 .33.02.5.05V4.51C11.68 4.5 11.34 4.5 11 4.5c-4.42 0-8 3.58-8 8 0 4.42 3.58 8 8 8v-2.04C7.96 18.25 6 15.38 6 12zm8 3v-2h-4v2h4z"/>
+                            </svg>
+                            <span>Pulisci Cache</span>
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- Barra progresso sincronizzazione -->

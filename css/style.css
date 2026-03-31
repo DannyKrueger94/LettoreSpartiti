@@ -574,6 +574,13 @@ main {
     gap: 15px;
 }
 
+.library-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
 .library-title {
     font-size: 1.8rem;
     background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%);
@@ -614,6 +621,40 @@ main {
 .btn-sync svg {
     width: 20px;
     height: 20px;
+}
+
+/* Pulsante pulizia cache */
+.btn-clear-cache {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: none;
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-clear-cache:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.btn-clear-cache svg {
+    width: 20px;
+    height: 20px;
+    animation: rotate-cache 3s linear infinite;
+}
+
+@keyframes rotate-cache {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .sync-badge {

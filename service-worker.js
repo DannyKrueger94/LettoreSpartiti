@@ -4,7 +4,7 @@
    ======================================== */
 
 // Versione cache con timestamp - si aggiorna automaticamente ad ogni modifica
-const CACHE_VERSION = 'spartiti-shell-v6-20260204'; // ⬅️ Cambia questa data quando modifichi i file
+const CACHE_VERSION = 'spartiti-shell-v7-20260331'; // ⬅️ Cambia questa data quando modifichi i file
 
 // Solo i file base dell'app (app shell)
 const APP_SHELL = [

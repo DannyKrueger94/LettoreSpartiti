@@ -48,6 +48,68 @@ const Toast = {
 let isScrolling = false;        // Stato play/pause
 let scrollSpeed = 0.5;          // Velocità corrente (0.1-1.5x)
 let scrollInterval = null;      // Timer per l'auto-scroll
+
+// ========== FUNZIONI PULIZIA CACHE ==========
+async function clearAllCaches() {
+    try {
+        // Ottieni tutte le cache
+        const cacheNames = await caches.keys();
+        console.log('🗑️ Cache trovate:', cacheNames);
+        
+        // Elimina tutte le cache
+        await Promise.all(
+            cacheNames.map(cacheName => {
+                console.log('🗑️ Eliminazione cache:', cacheName);
+                return caches.delete(cacheName);
+            })
+        );
+        
+        console.log('✅ Tutte le cache eliminate');
+        return true;
+    } catch (error) {
+        console.error('❌ Errore nella pulizia cache:', error);
+        return false;
+    }
+}
+
+async function clearCacheAndReload() {
+    Toast.info('🔄 Pulizia cache in corso...');
+    
+    try {
+        // 1. Pulisci tutte le cache
+        const cacheCleared = await clearAllCaches();
+        
+        if (!cacheCleared) {
+            Toast.error('❌ Errore durante la pulizia cache');
+            return;
+        }
+        
+        // 2. Disregistra e ri-registra il service worker per forzare l'aggiornamento
+        if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            
+            for (const registration of registrations) {
+                console.log('🔄 Disregistrazione Service Worker...');
+                await registration.unregister();
+            }
+            
+            console.log('✅ Service Worker disregistrato');
+        }
+        
+        // 3. Mostra notifica di successo
+        Toast.success('✅ Cache pulita! Ricaricamento in corso...', 2000);
+        
+        // 4. Attendi 1 secondo e ricarica la pagina (hard reload)
+        setTimeout(() => {
+            console.log('♻️ Ricaricamento pagina...');
+            window.location.reload(true);
+        }, 1000);
+        
+    } catch (error) {
+        console.error('❌ Errore:', error);
+        Toast.error('❌ Errore durante la pulizia: ' + error.message);
+    }
+}
 let mainContainer = null;       // Riferimento all'elemento main
 let scrollAccumulator = 0;      // Accumulatore per decimali (per velocità molto basse)
 
@@ -68,7 +130,8 @@ const elements = {
     changeFileBtn: document.getElementById('changeFileBtn'),
     fullscreenBtn: document.getElementById('fullscreenBtn'),
     notesPanel: document.getElementById('notesPanel'),
-    sheetPanel: document.getElementById('sheetPanel')
+    sheetPanel: document.getElementById('sheetPanel'),
+    clearCacheBtn: document.getElementById('clearCacheBtn')
 };
 
 // ========== INIZIALIZZAZIONE ==========
@@ -128,6 +191,11 @@ function setupEventListeners() {
 
     // Fullscreen
     elements.fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Pulizia Cache
+    if (elements.clearCacheBtn) {
+        elements.clearCacheBtn.addEventListener('click', clearCacheAndReload);
+    }
 
     // Gestione tocco su tablet: tocca lo schermo per play/pause
     mainContainer.addEventListener('click', (e) => {
