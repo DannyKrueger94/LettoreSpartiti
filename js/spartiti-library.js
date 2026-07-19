@@ -95,6 +95,21 @@ const spartitiCategories = {
                 title: "The Godfather - Main Theme",
                 sheetFile: "spartiti/Arpeggio/The Godfather - Main Theme.pdf",
                 videoUrl: "https://www.youtube.com/watch?v=YRbW6mXvxPw&list=WL&index=16"
+            },
+            { 
+                title: "Down by the River - Baldur's Gate",
+                sheetFile: "spartiti/Arpeggio/Down by the River - Baldur's Gate.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=G3l01W0RLPQ"
+            },
+            { 
+                title: "Game of Thrones - Main Theme",
+                sheetFile: "spartiti/Arpeggio/Game of Thrones - Main Theme.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=TW_a50asAPs"
+            },
+            { 
+                title: "Sparkle - Your Name",
+                sheetFile: "spartiti/Arpeggio/Sparkle - Your Name.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=FHmjcAqZX_k"
             }
         ]
     },
