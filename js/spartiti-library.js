@@ -110,6 +110,11 @@ const spartitiCategories = {
                 title: "Sparkle - Your Name",
                 sheetFile: "spartiti/Arpeggio/Sparkle - Your Name.pdf",
                 videoUrl: "https://www.youtube.com/watch?v=FHmjcAqZX_k"
+            },
+            { 
+                title: "Golden Brown X Love Story",
+                sheetFile: "spartiti/Arpeggio/Golden Brown X Love Story.pdf",
+                videoUrl: ""
             }
         ]
     },
