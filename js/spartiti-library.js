@@ -35,6 +35,11 @@ const spartitiCategories = {
                 notesFile: "spartiti/Classici/Lonely Day - System of a Down - Notes.pdf",
                 sheetFile: "spartiti/Classici/Lonely Day - System of a Down.pdf",
                 videoUrl: "https://www.youtube.com/watch?v=szOVjZQuUuo&t"
+            },
+            { 
+                title: "Iris - Goo Goo Dolls",
+                sheetFile: "spartiti/Classici/Iris - Goo Goo Dolls.pdf",
+                videoUrl: "https://www.youtube.com/watch?v=W7ZwAkPHR30"
             }
         ]
     },
